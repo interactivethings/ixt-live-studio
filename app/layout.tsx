@@ -1,3 +1,4 @@
+import ClientProviders from '@/components/ClientProviders';
 import type { Metadata } from 'next';
 import '../styles/globals.css';
 
@@ -43,7 +44,9 @@ export default function RootLayout({
         <meta property="og:url" content="https://ixt-live-studio.vercel.app" />
         <meta property="og:type" content="website" />
       </head>
-      <body className="bg-black">{children}</body>
+      <body className="bg-black">
+        <ClientProviders>{children}</ClientProviders>
+      </body>
     </html>
   );
 }
