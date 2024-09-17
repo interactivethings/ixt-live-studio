@@ -1,11 +1,18 @@
-import React from 'react'
+import Screen from '@/components/display/Screen';
+import { DisplayProvider } from '@/contexts/display-context';
 
-const page = () => {
+const homePage = async () => {
   return (
-    <div>
-      
+    <div className="w-full h-full">
+      <DisplayProvider>
+        <Screen>
+          <text x="50%" y="50%" textAnchor="middle" fill="white">
+            Hello, World
+          </text>
+        </Screen>
+      </DisplayProvider>
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default homePage;
