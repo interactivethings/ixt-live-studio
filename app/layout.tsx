@@ -43,7 +43,7 @@ export default function RootLayout({
         <meta property="og:url" content="https://ixt-live-studio.vercel.app" />
         <meta property="og:type" content="website" />
       </head>
-      <body>{children}</body>
+      <body className="bg-black">{children}</body>
     </html>
   );
 }
