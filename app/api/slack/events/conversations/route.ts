@@ -16,14 +16,44 @@ export const POST = async (req: NextRequest) => {
     const body = JSON.parse(rawBody);
     const { type, challenge, event } = body;
 
+    // URL verification for Slack API
     if (type === 'url_verification') {
       return NextResponse.json({ challenge });
     }
 
+    // Handle Slack message events
     if (type === 'event_callback' && event?.type === 'message') {
-      console.log('New message:', event);
+      //   const user = await getFirebaseUser(event.user);
 
-      return NextResponse.json({ status: 'Message stored successfully' });
+      //   const db = admin.database();
+      //   const ref = db.ref('data/team-communication/sensor-1/value');
+
+      //   const snapshot = await ref.child(event.user).once('value');
+      //   if (snapshot.exists()) {
+
+      //     const data = snapshot.val();
+
+      //     await ref.child(event.user).update({
+      //       ...data,
+      //       messages: data.messages + 1,
+      //       characters: data.characters + event.text.length,
+      //       lastMessage: Date.now(),
+      //       connections: {
+
+      //       }
+      //     });
+      //   } else {
+      //     await ref.child(event.user).set({
+      //       ...user,
+      //       characters: event.text.length,
+      //       messages: 1,
+      //       lastMessage: Date.now(),
+      //       connections: {
+
+      //       }
+      //     });
+      //   }
+      console.log(body);
     }
 
     return new Response(
