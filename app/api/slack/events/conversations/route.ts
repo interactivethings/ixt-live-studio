@@ -1,10 +1,24 @@
+import { verifySlackRequest } from '@/server/security';
 import { newError } from '@/utils/error-handling';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const POST = async (req: NextRequest) => {
   try {
-    const body = await req.json();
+    const rawBody = await req.text();
+
+    if (!verifySlackRequest(rawBody, req)) {
+      return NextResponse.json(
+        { error: 'Invalid Slack signature' },
+        { status: 400 }
+      );
+    }
+
+    const body = JSON.parse(rawBody);
     const { type, challenge, event } = body;
+
+    if (type === 'url_verification') {
+      return NextResponse.json({ challenge });
+    }
 
     if (type === 'url_verification') {
       return NextResponse.json({ challenge });
