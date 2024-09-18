@@ -8,6 +8,9 @@ export interface Metric {
 
 export interface Config {
   type: ConfigType;
+  defaults: {
+    [key: string]: number;
+  };
 }
 
 export interface User {

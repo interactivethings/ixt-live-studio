@@ -1,4 +1,5 @@
 import Screen from '@/components/display/Screen';
+import TeamMembers from '@/components/team-communication/TeamMembers';
 import { DisplayProvider } from '@/contexts/display-context';
 
 const homePage = async () => {
@@ -6,9 +7,7 @@ const homePage = async () => {
     <div className="w-full h-full">
       <DisplayProvider>
         <Screen>
-          <text x="50%" y="50%" textAnchor="middle" fill="white">
-            Hello, World
-          </text>
+          <TeamMembers />
         </Screen>
       </DisplayProvider>
     </div>

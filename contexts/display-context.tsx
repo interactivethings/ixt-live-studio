@@ -7,11 +7,12 @@ import {
   normalizeData,
   NormalizedMetricNode,
 } from '@/utils/normalize';
-import { createContext, FC, useContext } from 'react';
+import { select } from 'd3';
+import { createContext, FC, useContext, useEffect, useRef } from 'react';
 import { useConfig } from './config-context';
-
 export interface DisplayContextType<T> {
   displayData: NormalizedMetricNode<T>[];
+  svgRef: React.RefObject<SVGSVGElement> | null;
 }
 
 export const DisplayContext = createContext<
@@ -21,6 +22,8 @@ export const DisplayContext = createContext<
 export const DisplayProvider: FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+
   const { displayType } = useConfig();
 
   const { data } = useRTDB<MetricBody>({
@@ -30,8 +33,19 @@ export const DisplayProvider: FC<{ children: React.ReactNode }> = ({
   const metricType = getMetricType(displayType as keyof MetricTypes);
   const displayData = normalizeData<typeof metricType>(data);
 
+  useEffect(() => {
+    const svg = select(svgRef.current)
+      .attr('width', '100%')
+      .attr('height', '100%');
+
+    return () => {
+      svg.selectAll('*').remove();
+    };
+  }, []);
+
   const contextValue: DisplayContextType<typeof metricType> = {
     displayData,
+    svgRef,
   };
 
   return (
