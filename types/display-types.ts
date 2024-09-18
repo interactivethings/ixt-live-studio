@@ -6,8 +6,12 @@ export type MetricTypes = {
       name: string;
       characters: number;
       messages: number;
+      lastMessage: number;
       connections: {
-        [key: string]: number;
+        [key: string]: {
+          messages: number;
+          characters: number;
+        };
       };
     };
   };
