@@ -43,10 +43,12 @@ export const POST = async (req: NextRequest) => {
             [event.channel]: data.connections[event.channel]
               ? {
                   messages: data.connections[event.channel].messages + 1,
-                  characters: data.connections[event.channel].characters,
+                  characters:
+                    data.connections[event.channel].characters +
+                    event.text.length,
                 }
               : {
-                  messages: data.connections[event.channel] + 1,
+                  messages: 1,
                   characters: event.text.length,
                 },
           },
