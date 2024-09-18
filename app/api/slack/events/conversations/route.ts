@@ -40,7 +40,15 @@ export const POST = async (req: NextRequest) => {
           characters: data.characters + event.text.length,
           lastMessage: Date.now(),
           connections: {
-            [event.channel]: data.connections[event.channel] + 1,
+            [event.channel]: data.connections[event.channel]
+              ? {
+                  messages: data.connections[event.channel].messages + 1,
+                  characters: data.connections[event.channel].characters,
+                }
+              : {
+                  messages: data.connections[event.channel] + 1,
+                  characters: event.text.length,
+                },
           },
         });
       } else {
@@ -50,7 +58,10 @@ export const POST = async (req: NextRequest) => {
           messages: 1,
           lastMessage: Date.now(),
           connections: {
-            [event.channel]: 1,
+            [event.channel]: {
+              messages: 1,
+              characters: event.text.length,
+            },
           },
         });
       }
