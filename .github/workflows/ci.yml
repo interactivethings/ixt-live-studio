@@ -1,0 +1,38 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - master
+      - feat/**
+      - fix/**
+      - perf/**
+      - refactor/**
+      - chore/**
+      - style/**
+      - init/**
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint code
+        run: npm run lint
+
+      # - name: Run tests
+      #   run: npm run test
+
+      - name: Build projects
+        run: npm run build
