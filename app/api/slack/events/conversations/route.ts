@@ -1,5 +1,7 @@
+import { getFirebaseUser } from '@/server/firebase/utils';
 import { verifySlackRequest } from '@/server/security';
 import { newError } from '@/utils/error-handling';
+import admin from 'firebase-admin';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const POST = async (req: NextRequest) => {
@@ -23,37 +25,35 @@ export const POST = async (req: NextRequest) => {
 
     // Handle Slack message events
     if (type === 'event_callback' && event?.type === 'message') {
-      //   const user = await getFirebaseUser(event.user);
+      const user = await getFirebaseUser(event.user);
 
-      //   const db = admin.database();
-      //   const ref = db.ref('data/team-communication/sensor-1/value');
+      const db = admin.database();
+      const ref = db.ref('data/team-communication/sensor-1/value');
 
-      //   const snapshot = await ref.child(event.user).once('value');
-      //   if (snapshot.exists()) {
+      const snapshot = await ref.child(event.user).once('value');
+      if (snapshot.exists()) {
+        const data = snapshot.val();
 
-      //     const data = snapshot.val();
-
-      //     await ref.child(event.user).update({
-      //       ...data,
-      //       messages: data.messages + 1,
-      //       characters: data.characters + event.text.length,
-      //       lastMessage: Date.now(),
-      //       connections: {
-
-      //       }
-      //     });
-      //   } else {
-      //     await ref.child(event.user).set({
-      //       ...user,
-      //       characters: event.text.length,
-      //       messages: 1,
-      //       lastMessage: Date.now(),
-      //       connections: {
-
-      //       }
-      //     });
-      //   }
-      console.log(body);
+        await ref.child(event.user).update({
+          ...data,
+          messages: data.messages + 1,
+          characters: data.characters + event.text.length,
+          lastMessage: Date.now(),
+          connections: {
+            [event.channel]: data.connections[event.channel] + 1,
+          },
+        });
+      } else {
+        await ref.child(event.user).set({
+          ...user,
+          characters: event.text.length,
+          messages: 1,
+          lastMessage: Date.now(),
+          connections: {
+            [event.channel]: 1,
+          },
+        });
+      }
     }
 
     return new Response(
