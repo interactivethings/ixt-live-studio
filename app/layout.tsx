@@ -1,4 +1,5 @@
 import ClientProviders from '@/components/ClientProviders';
+import { ConfigProvider } from '@/contexts/config-context';
 import type { Metadata } from 'next';
 import '../styles/globals.css';
 
@@ -45,7 +46,9 @@ export default function RootLayout({
         <meta property="og:type" content="website" />
       </head>
       <body className="bg-black">
-        <ClientProviders>{children}</ClientProviders>
+        <ClientProviders>
+          <ConfigProvider>{children}</ConfigProvider>
+        </ClientProviders>
       </body>
     </html>
   );

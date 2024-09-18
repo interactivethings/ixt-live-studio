@@ -1,0 +1,254 @@
+{
+  "data": {
+    "team-communication": {
+      "sensor-1": {
+        "title": "Team Communication",
+        "id": "dfhjkdhf-dfhjdkoi90djk-djfkld",
+        "value": {
+          "member-1": {
+            "name": "Noah",
+            "characters": 3894,
+            "messages": 44,
+            "color": "#09253D",
+            "connections": {
+              "Ana": 15,
+              "Mark": 20,
+              "Lloyd": 9
+            }
+          },
+          "member-2": {
+            "name": "Ana",
+            "characters": 4123,
+            "messages": 50,
+            "color": "#B463D5",
+            "connections": {
+              "Noah": 12,
+              "Bartosz": 15,
+              "Michael": 23
+            }
+          },
+          "member-3": {
+            "name": "Lloyd",
+            "characters": 3567,
+            "messages": 39,
+            "color": "#8CDC5F",
+            "connections": {
+              "Noah": 8,
+              "Tania": 12,
+              "Kerstin": 19
+            }
+          },
+          "member-4": {
+            "name": "Michael",
+            "characters": 2900,
+            "messages": 28,
+            "color": "#4D9B68",
+            "connections": {
+              "Ana": 10,
+              "Bartosz": 8,
+              "Tania": 10
+            }
+          },
+          "member-5": {
+            "name": "Bartosz",
+            "characters": 4756,
+            "messages": 53,
+            "color": "#28567F",
+            "connections": {
+              "Noah": 13,
+              "Michael": 10,
+              "Christian": 30
+            }
+          },
+          "member-6": {
+            "name": "Christian",
+            "characters": 3370,
+            "messages": 30,
+            "color": "#45A7EF",
+            "connections": {
+              "Bartosz": 15,
+              "Jan": 15,
+              "Michela": 10
+            }
+          },
+          "member-7": {
+            "name": "Jan",
+            "characters": 4045,
+            "messages": 47,
+            "color": "#5CBA68",
+            "connections": {
+              "Christian": 12,
+              "Michela": 10,
+              "Benjamin": 25
+            }
+          },
+          "member-8": {
+            "name": "Michela",
+            "characters": 2995,
+            "messages": 27,
+            "color": "#F18430",
+            "connections": {
+              "Jan": 9,
+              "Tania": 10,
+              "Solange": 8
+            }
+          },
+          "member-9": {
+            "name": "Tania",
+            "characters": 5250,
+            "messages": 60,
+            "color": "#B7E345",
+            "connections": {
+              "Lloyd": 15,
+              "Michela": 20,
+              "Christian": 25
+            }
+          },
+          "member-10": {
+            "name": "Benjamin",
+            "characters": 3820,
+            "messages": 42,
+            "color": "#123B5B",
+            "connections": {
+              "Jan": 10,
+              "Christian": 12,
+              "Solange": 20
+            }
+          },
+          "member-11": {
+            "name": "Christoph",
+            "characters": 3100,
+            "messages": 34,
+            "color": "#427C62",
+            "connections": {
+              "Bartosz": 9,
+              "Michael": 10,
+              "Jan": 15
+            }
+          },
+          "member-12": {
+            "name": "Ira",
+            "characters": 4375,
+            "messages": 48,
+            "color": "#ACFAE2",
+            "connections": {
+              "Solange": 15,
+              "Tomas": 13,
+              "Kerstin": 20
+            }
+          },
+          "member-13": {
+            "name": "Kerstin",
+            "characters": 3650,
+            "messages": 41,
+            "color": "#F7BB35",
+            "connections": {
+              "Ira": 12,
+              "Lloyd": 13,
+              "Tomas": 16
+            }
+          },
+          "member-14": {
+            "name": "Solange",
+            "characters": 2950,
+            "messages": 29,
+            "color": "#DC5B89",
+            "connections": {
+              "Michela": 9,
+              "Benjamin": 12,
+              "Ira": 8
+            }
+          },
+          "member-15": {
+            "name": "Tomas",
+            "characters": 4235,
+            "messages": 46,
+            "color": "#FBD749",
+            "connections": {
+              "Kerstin": 15,
+              "Ira": 16,
+              "Christoph": 15
+            }
+          },
+          "member-16": {
+            "name": "Joao",
+            "characters": 3600,
+            "messages": 40,
+            "color": "#3C5C55",
+            "connections": {
+              "Noah": 15,
+              "Michela": 10,
+              "Jan": 15
+            }
+          },
+          "member-17": {
+            "name": "Julia",
+            "characters": 3800,
+            "messages": 45,
+            "color": "#5A4BA2",
+            "connections": {
+              "Noah": 20,
+              "Tania": 12,
+              "Joao": 13
+            }
+          },
+          "member-18": {
+            "name": "Mark",
+            "characters": 4000,
+            "messages": 50,
+            "color": "#B95AA7",
+            "connections": {
+              "Noah": 15,
+              "Solange": 18,
+              "Tania": 17
+            }
+          },
+          "member-19": {
+            "name": "Shuai",
+            "characters": 3400,
+            "messages": 35,
+            "color": "#5ED8CD",
+            "connections": {
+              "Tania": 10,
+              "Michela": 12,
+              "Noah": 13
+            }
+          },
+          "member-20": {
+            "name": "Patrick",
+            "characters": 4100,
+            "messages": 49,
+            "color": "#4D879C",
+            "connections": {
+              "Kerstin": 15,
+              "Christoph": 14,
+              "Julia": 20
+            }
+          },
+          "member-21": {
+            "name": "Gerhard",
+            "characters": 3850,
+            "messages": 43,
+            "color": "#F28F2A",
+            "connections": {
+              "Patrick": 15,
+              "Noah": 13,
+              "Solange": 15
+            }
+          },
+          "member-22": {
+            "name": "Annina",
+            "characters": 3950,
+            "messages": 47,
+            "color": "#437375",
+            "connections": {
+              "Joao": 12,
+              "Patrick": 18,
+              "Shuai": 17
+            }
+          }
+        }
+      }
+    }
+  }
+}

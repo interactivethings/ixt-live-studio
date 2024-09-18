@@ -52,3 +52,21 @@ exports.updateActiveMetric = functions.pubsub
       return null;
     }
   });
+
+exports.clearRealtimeDatabase = functions.pubsub
+  .schedule("every 24 hours")
+  .onRun(async (_) => {
+    const pathToClear = "/data";
+
+    try {
+      const ref = rtdb.ref(pathToClear);
+
+      await ref.remove();
+
+      console.log(`Successfully cleared the path: ${pathToClear}`);
+      return null;
+    } catch (error) {
+      console.error("Error clearing Realtime Database path:", error);
+      return null;
+    }
+  });
