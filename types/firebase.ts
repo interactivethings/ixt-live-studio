@@ -1,11 +1,16 @@
-import { DisplayType } from "./display-types"
+import { DisplayType } from './display-types';
 export type ConfigType = 'ANALOG' | 'DIGITAL';
 
 export interface Metric {
-    id: DisplayType;
-    config: Config
+  id: DisplayType;
+  config: Config;
 }
 
 export interface Config {
-    type: ConfigType
+  type: ConfigType;
+}
+
+export interface User {
+  name: string;
+  color: string;
 }
