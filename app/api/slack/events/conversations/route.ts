@@ -20,12 +20,8 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json({ challenge });
     }
 
-    if (type === 'url_verification') {
-      return NextResponse.json({ challenge });
-    }
-
     if (type === 'event_callback' && event?.type === 'message') {
-      console.log('New message:', event.text);
+      console.log('New message:', event);
 
       return NextResponse.json({ status: 'Message stored successfully' });
     }
