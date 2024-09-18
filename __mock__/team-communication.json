@@ -6,264 +6,245 @@
         "id": "dfhjkdhf-dfhjdkoi90djk-djfkld",
         "value": {
           "member-1": {
-            "name": "Noah Onyejese",
+            "name": "Noah",
             "characters": 3894,
             "messages": 44,
-            "color": "#ffe789",
+            "color": "#09253D",
             "connections": {
-              "Ana Smith": 15,
-              "Mark Konzmann": 20,
-              "James Clark": 9
+              "Ana": 15,
+              "Mark": 20,
+              "Lloyd": 9
             }
           },
           "member-2": {
-            "name": "Ava Smith",
+            "name": "Ana",
             "characters": 4123,
             "messages": 50,
-            "color": "#ff6347",
+            "color": "#B463D5",
             "connections": {
-              "Noah Onyejese": 12,
-              "Emma Brown": 15,
-              "Liam Johnson": 8,
-              "Sophia Davis": 15
+              "Noah": 12,
+              "Bartosz": 15,
+              "Michael": 23
             }
           },
           "member-3": {
-            "name": "Liam Johnson",
+            "name": "Lloyd",
             "characters": 3567,
             "messages": 39,
-            "color": "#8a2be2",
+            "color": "#8CDC5F",
             "connections": {
-              "Olivia Garcia": 10,
-              "Benjamin Taylor": 12,
-              "Mia Moore": 7,
-              "Emma Brown": 10
+              "Noah": 8,
+              "Tania": 12,
+              "Kerstin": 19
             }
           },
           "member-4": {
-            "name": "Emma Brown",
+            "name": "Michael",
             "characters": 2900,
             "messages": 28,
-            "color": "#7fffd4",
+            "color": "#4D9B68",
             "connections": {
-              "James Miller": 9,
-              "Liam Johnson": 8,
-              "Olivia Garcia": 11
+              "Ana": 10,
+              "Bartosz": 8,
+              "Tania": 10
             }
           },
           "member-5": {
-            "name": "Olivia Garcia",
+            "name": "Bartosz",
             "characters": 4756,
             "messages": 53,
-            "color": "#f08080",
+            "color": "#28567F",
             "connections": {
-              "Sophia Davis": 10,
-              "William Martinez": 15,
-              "Emma Brown": 9,
-              "Ava Smith": 19
+              "Noah": 13,
+              "Michael": 10,
+              "Christian": 30
             }
           },
           "member-6": {
-            "name": "William Martinez",
+            "name": "Christian",
             "characters": 3370,
             "messages": 30,
-            "color": "#deb887",
+            "color": "#45A7EF",
             "connections": {
-              "Charlotte Thomas": 12,
-              "Noah Onyejese": 8,
-              "Mia Moore": 10
+              "Bartosz": 15,
+              "Jan": 15,
+              "Michela": 10
             }
           },
           "member-7": {
-            "name": "Sophia Davis",
+            "name": "Jan",
             "characters": 4045,
             "messages": 47,
-            "color": "#00ced1",
+            "color": "#5CBA68",
             "connections": {
-              "Noah Onyejese": 13,
-              "Olivia Garcia": 12,
-              "Henry Jackson": 10,
-              "Ava Smith": 12
+              "Christian": 12,
+              "Michela": 10,
+              "Benjamin": 25
             }
           },
           "member-8": {
-            "name": "James Miller",
+            "name": "Michela",
             "characters": 2995,
             "messages": 27,
-            "color": "#ff4500",
+            "color": "#F18430",
             "connections": {
-              "Sophia Davis": 8,
-              "Mia Moore": 9,
-              "William Martinez": 10
+              "Jan": 9,
+              "Tania": 10,
+              "Solange": 8
             }
           },
           "member-9": {
-            "name": "Isabella Wilson",
+            "name": "Tania",
             "characters": 5250,
             "messages": 60,
-            "color": "#b0e0e6",
+            "color": "#B7E345",
             "connections": {
-              "Noah Onyejese": 15,
-              "Sophia Davis": 20,
-              "William Martinez": 15,
-              "Henry Jackson": 10
+              "Lloyd": 15,
+              "Michela": 20,
+              "Christian": 25
             }
           },
           "member-10": {
-            "name": "Benjamin Taylor",
+            "name": "Benjamin",
             "characters": 3820,
             "messages": 42,
-            "color": "#daa520",
+            "color": "#123B5B",
             "connections": {
-              "Liam Johnson": 10,
-              "Sophia Davis": 10,
-              "Mia Moore": 12,
-              "Charlotte Thomas": 10
+              "Jan": 10,
+              "Christian": 12,
+              "Solange": 20
             }
           },
           "member-11": {
-            "name": "Mia Moore",
+            "name": "Christoph",
             "characters": 3100,
             "messages": 34,
-            "color": "#ff69b4",
+            "color": "#427C62",
             "connections": {
-              "James Miller": 9,
-              "Sophia Davis": 10,
-              "Benjamin Taylor": 15
+              "Bartosz": 9,
+              "Michael": 10,
+              "Jan": 15
             }
           },
           "member-12": {
-            "name": "Lucas Anderson",
+            "name": "Ira",
             "characters": 4375,
             "messages": 48,
-            "color": "#2e8b57",
+            "color": "#ACFAE2",
             "connections": {
-              "Charlotte Thomas": 12,
-              "Henry Jackson": 13,
-              "Ava Smith": 10,
-              "Emma Brown": 13
+              "Solange": 15,
+              "Tomas": 13,
+              "Kerstin": 20
             }
           },
           "member-13": {
-            "name": "Charlotte Thomas",
+            "name": "Kerstin",
             "characters": 3650,
             "messages": 41,
-            "color": "#1e90ff",
+            "color": "#F7BB35",
             "connections": {
-              "William Martinez": 12,
-              "Lucas Anderson": 10,
-              "Benjamin Taylor": 9,
-              "Mia Moore": 10
+              "Ira": 12,
+              "Lloyd": 13,
+              "Tomas": 16
             }
           },
           "member-14": {
-            "name": "Henry Jackson",
+            "name": "Solange",
             "characters": 2950,
             "messages": 29,
-            "color": "#adff2f",
+            "color": "#DC5B89",
             "connections": {
-              "Charlotte Thomas": 9,
-              "Sophia Davis": 10,
-              "Lucas Anderson": 10
+              "Michela": 9,
+              "Benjamin": 12,
+              "Ira": 8
             }
           },
           "member-15": {
-            "name": "Amelia White",
+            "name": "Tomas",
             "characters": 4235,
             "messages": 46,
-            "color": "#ffb6c1",
+            "color": "#FBD749",
             "connections": {
-              "Sophia Davis": 15,
-              "Lucas Anderson": 16,
-              "Liam Johnson": 15
+              "Kerstin": 15,
+              "Ira": 16,
+              "Christoph": 15
             }
           },
           "member-16": {
-            "name": "Ethan Harris",
+            "name": "Joao",
             "characters": 3600,
             "messages": 40,
-            "color": "#20b2aa",
+            "color": "#3C5C55",
             "connections": {
-              "Ava Smith": 10,
-              "Noah Onyejese": 15,
-              "Lucas Anderson": 15
+              "Noah": 15,
+              "Michela": 10,
+              "Jan": 15
             }
           },
           "member-17": {
-            "name": "Harper Clark",
+            "name": "Julia",
             "characters": 3800,
             "messages": 45,
-            "color": "#ffdead",
+            "color": "#5A4BA2",
             "connections": {
-              "Ava Smith": 20,
-              "Liam Johnson": 12,
-              "Noah Onyejese": 13
+              "Noah": 20,
+              "Tania": 12,
+              "Joao": 13
             }
           },
           "member-18": {
-            "name": "Alexander Lewis",
+            "name": "Mark",
             "characters": 4000,
             "messages": 50,
-            "color": "#48d1cc",
+            "color": "#B95AA7",
             "connections": {
-              "Noah Onyejese": 15,
-              "Sophia Davis": 18,
-              "Henry Jackson": 17
+              "Noah": 15,
+              "Solange": 18,
+              "Tania": 17
             }
           },
           "member-19": {
-            "name": "Evelyn Young",
+            "name": "Shuai",
             "characters": 3400,
             "messages": 35,
-            "color": "#b22222",
+            "color": "#5ED8CD",
             "connections": {
-              "Sophia Davis": 10,
-              "Amelia White": 12,
-              "Noah Onyejese": 13
+              "Tania": 10,
+              "Michela": 12,
+              "Noah": 13
             }
           },
           "member-20": {
-            "name": "Sebastian Hall",
+            "name": "Patrick",
             "characters": 4100,
             "messages": 49,
-            "color": "#ff8c00",
+            "color": "#4D879C",
             "connections": {
-              "Mia Moore": 15,
-              "Charlotte Thomas": 14,
-              "Amelia White": 20
+              "Kerstin": 15,
+              "Christoph": 14,
+              "Julia": 20
             }
           },
           "member-21": {
-            "name": "Avery King",
+            "name": "Gerhard",
             "characters": 3850,
             "messages": 43,
-            "color": "#00fa9a",
+            "color": "#F28F2A",
             "connections": {
-              "Noah Onyejese": 15,
-              "William Martinez": 13,
-              "Sophia Davis": 15
+              "Patrick": 15,
+              "Noah": 13,
+              "Solange": 15
             }
           },
           "member-22": {
-            "name": "Jack Scott",
+            "name": "Annina",
             "characters": 3950,
             "messages": 47,
-            "color": "#db7093",
+            "color": "#437375",
             "connections": {
-              "Noah Onyejese": 12,
-              "Charlotte Thomas": 18,
-              "Sophia Davis": 17
-            }
-          },
-          "member-23": {
-            "name": "Ella Green",
-            "characters": 4500,
-            "messages": 52,
-            "color": "#4682b4",
-            "connections": {
-              "Mia Moore": 20,
-              "Benjamin Taylor": 17,
-              "Noah Onyejese": 15
+              "Joao": 12,
+              "Patrick": 18,
+              "Shuai": 17
             }
           }
         }
