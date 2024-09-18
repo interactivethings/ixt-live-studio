@@ -2,16 +2,15 @@ export type DisplayType = 'noice' | 'team-communication' | 'luminance';
 
 export type MetricTypes = {
   'team-communication': {
-    [key: `member-${number}`]: {
-      name: string;
-      characters: number;
-      messages: number;
-      lastMessage: number;
-      connections: {
-        [key: string]: {
-          messages: number;
-          characters: number;
-        };
+    name: string;
+    characters: number;
+    messages: number;
+    lastMessage: number;
+    color: string;
+    connections: {
+      [key: string]: {
+        messages: number;
+        characters: number;
       };
     };
   };
