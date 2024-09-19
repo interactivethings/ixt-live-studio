@@ -1,3 +1,4 @@
+import { initializeFirebase } from '@/server/firebase/server';
 import { getFirebaseUser } from '@/server/firebase/utils';
 import { verifySlackRequest } from '@/server/security';
 import { newError } from '@/utils/error-handling';
@@ -36,6 +37,7 @@ export const POST = async (req: NextRequest) => {
       );
     }
 
+    initializeFirebase();
     const db = admin.database();
 
     // Handle Slack reaction events
