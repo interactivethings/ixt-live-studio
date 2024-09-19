@@ -450,10 +450,9 @@ const TeamCommunication: FC = () => {
           </>
         );
       })}
-
-      <motion.text
-        x={40}
-        y={40}
+      <motion.g
+        x={0}
+        y={0}
         initial={{
           opacity: 1, // Start with full opacity
           y: -100,
@@ -467,14 +466,30 @@ const TeamCommunication: FC = () => {
           delay: 3, // Add delay before opacity transitions
           ease: easingCubic,
         }}
-        textAnchor="left"
-        fill="white"
-        fontFamily="Arial"
-        fontWeight={600}
-        fontSize={width < 768 ? 28 : 56}
       >
-        {displayData[0]?.title}
-      </motion.text>
+        <text
+          x={40}
+          y={40}
+          textAnchor="left"
+          fill="white"
+          fontFamily="Arial"
+          fontWeight={600}
+          fontSize={width < 768 ? 28 : 56}
+        >
+          Live Studio
+        </text>
+        <text
+          x={40}
+          y={width < 768 ? 60 : 80}
+          textAnchor="left"
+          fill="gray"
+          fontFamily="Arial"
+          fontWeight={400}
+          fontSize={width < 768 ? 14 : 24}
+        >
+          {displayData[0]?.title}
+        </text>
+      </motion.g>
     </svg>
   );
 };
