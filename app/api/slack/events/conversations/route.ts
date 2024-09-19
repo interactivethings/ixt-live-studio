@@ -73,19 +73,20 @@ export const POST = async (req: NextRequest) => {
           });
         }
       } else {
-        // Create new user data if it doesn't exist
-        await userRef.set({
-          ...user,
-          messages: 1,
-          characters: event.text.length,
-          lastMessage: Date.now(),
-          connections: {
-            [event.channel]: {
-              messages: 1,
-              characters: event.text.length,
+        if (user) {
+          await userRef.set({
+            ...user,
+            messages: 1,
+            characters: event.text.length,
+            lastMessage: Date.now(),
+            connections: {
+              [event.channel]: {
+                messages: 1,
+                characters: event.text.length,
+              },
             },
-          },
-        });
+          });
+        }
       }
     }
 
