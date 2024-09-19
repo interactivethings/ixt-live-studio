@@ -4,6 +4,7 @@ import { verifySlackRequest } from '@/server/security';
 import { newError } from '@/utils/error-handling';
 import admin from 'firebase-admin';
 import { NextRequest, NextResponse } from 'next/server';
+import emoji from 'node-emoji';
 
 export const POST = async (req: NextRequest) => {
   try {
@@ -40,9 +41,10 @@ export const POST = async (req: NextRequest) => {
 
       if (userData) {
         // Update the last reaction timestamp
+        const reactionEmoji = emoji.get(event.reaction) || event.reaction;
         await userRef.update({
           ...userData,
-          lastReaction: event.reaction,
+          lastReaction: reactionEmoji,
         });
       }
 
