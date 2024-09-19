@@ -22,6 +22,7 @@ export interface Node {
   characters: number;
   lastMessage: number;
   lastReaction: string;
+  reactions: number;
   x: number;
   y: number;
   radius: number;
@@ -107,16 +108,32 @@ const TeamCommunication: FC = () => {
 
         const fallbackPosition = radius + RADIUS_PADDING + SCREEN_PADDING;
         const existingNode = nodes.find((node) => node.id === member.id);
+        if (member.name === 'Noah' || member.name === 'Ana') {
+          console.log('existingNode', existingNode);
+        }
         if (existingNode) {
-          const hasChanged = existingNode?.messages !== member.messages;
+          const hasChangedMessage = existingNode?.messages !== member.messages;
 
-          if (hasChanged) {
-            const type =
-              existingNode?.lastReaction !== member.lastReaction
-                ? 'reaction'
-                : existingNode?.messages !== member.messages && 'message';
+          const hasChangedReaction =
+            existingNode?.reactions !== member.reactions;
+
+          if (member.name === 'Noah' || member.name === 'Ana') {
+            console.log(
+              existingNode?.messages,
+              member.messages,
+              existingNode?.lastReaction,
+              member.lastReaction,
+              member.name,
+              member.id
+            );
+          }
+
+          if (hasChangedMessage) {
+            setType('message');
             setActive(member.id || '');
-            setType(type || 'message');
+          } else if (hasChangedReaction) {
+            setType('reaction');
+            setActive(member.id || '');
           }
 
           const connections = member.connections || {};
@@ -124,8 +141,12 @@ const TeamCommunication: FC = () => {
           if (existingNode) {
             return {
               ...existingNode,
+              messages: member.messages,
+              characters: member.characters,
+              reactions: member.reactions,
+              lastReaction: member.lastReaction,
               radius,
-              change: hasChanged,
+              change: hasChangedMessage || hasChangedReaction,
               connections, // Ensure connections are updated from member
             };
           }
@@ -402,9 +423,17 @@ const TeamCommunication: FC = () => {
                 key={`text-${node.id}-${i}`}
                 fill={'white'}
                 textAnchor={'center'}
-                fontFamily="Arial"
+                fontFamily={type === 'reaction' ? 'Apple Color Emoji' : 'Arial'}
                 fontWeight={300}
-                fontSize={width < 768 ? 12 : 16}
+                fontSize={
+                  type === 'reaction'
+                    ? width < 768
+                      ? 96
+                      : 128
+                    : width < 768
+                    ? 12
+                    : 16
+                }
                 initial={{
                   x: node.x - getTextWidth(node.name) / 2,
                   y: node.y,
@@ -415,7 +444,16 @@ const TeamCommunication: FC = () => {
                 animate={{
                   y: active === node.id ? node.y - node.radius - 20 : node.y,
                   opacity: active === node.id ? 1 : 0,
-                  fontSize: active === node.id ? (width < 768 ? 12 : 16) : 0,
+                  fontSize:
+                    active === node.id
+                      ? type === 'reaction'
+                        ? width < 768
+                          ? 96
+                          : 128
+                        : width < 768
+                        ? 12
+                        : 16
+                      : 0,
                 }}
                 onAnimationComplete={() =>
                   setTimeout(() => {
@@ -423,7 +461,7 @@ const TeamCommunication: FC = () => {
                   }, 2000)
                 }
                 transition={{
-                  duration: 1.5,
+                  duration: 1,
                   ease: easingCubic,
                 }}
               >
