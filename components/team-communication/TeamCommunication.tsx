@@ -142,8 +142,7 @@ const TeamCommunication: FC = () => {
           if (existingNode) {
             return {
               ...existingNode,
-              x,
-              y,
+
               messages: member.messages,
               characters: member.characters,
               reactions: member.reactions,
