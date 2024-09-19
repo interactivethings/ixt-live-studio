@@ -4,7 +4,13 @@ import { useConfig } from '@/contexts/config-context';
 import { useDisplay } from '@/contexts/display-context';
 import { useWindowDimensions } from '@/hooks/use-window-dimensions';
 import { MetricTypes } from '@/types/display-types';
-import { getMetricType, resolveCollisions } from '@/utils/normalize';
+import {
+  calculatePreferredWhiteSpace,
+  calulcateAvailableSpace,
+  getMetricType,
+  relativeTeamCommunicationMemberSize,
+  resolveCollisions,
+} from '@/utils/normalize';
 import { motion } from 'framer-motion';
 import { FC, Fragment, useEffect, useState } from 'react';
 
@@ -41,6 +47,21 @@ const TeamCommunication: FC = () => {
   const [hasRendered, setHasRendered] = useState(false);
   const [textOpacity, setTextOpacity] = useState(true);
   const [active, setActive] = useState<string>('');
+  const { width, height } = useWindowDimensions();
+  const whiteSpaceRatio = (metricConfigs?.config.defaults.ratio as [
+    number,
+    number
+  ]) || [0.9, 0.9];
+
+  const whiteSpace = calculatePreferredWhiteSpace(
+    width,
+    height,
+    whiteSpaceRatio
+  );
+
+  const defaultMemberSize: number =
+    (metricConfigs?.config.defaults.minimumCircleSize as number) || 10;
+  const availableSpace = calulcateAvailableSpace(width * height, whiteSpace);
 
   useEffect(() => {
     if (hasRendered) {
@@ -58,17 +79,36 @@ const TeamCommunication: FC = () => {
   useEffect(() => {
     setHasRendered(true); // Mark component as rendered after first mount
   }, []);
-  const defaultMemberSize =
-    metricConfigs?.config.defaults.circleMultiplicator || 10;
-
-  const { width, height } = useWindowDimensions();
 
   useEffect(() => {
     if (!width || !height) return;
 
+    const totalMessages = displayData.reduce(
+      (acc, sensor) =>
+        acc +
+        sensor.value.reduce(
+          (innerAcc, member) => innerAcc + member.messages,
+          0
+        ),
+      0
+    );
+
     let updatedNodes: Node[] = displayData.flatMap((sensor) =>
       sensor.value.map((member, i) => {
-        const radius = member.messages * defaultMemberSize || defaultMemberSize;
+        console.log(
+          relativeTeamCommunicationMemberSize(
+            member.messages,
+            availableSpace,
+            totalMessages,
+            defaultMemberSize
+          )
+        );
+        const radius = relativeTeamCommunicationMemberSize(
+          member.messages,
+          availableSpace,
+          totalMessages,
+          defaultMemberSize
+        );
         const existingNode = nodes.find((node) => node.name === member.name);
         const hasChanged = existingNode?.radius !== radius;
         const fallbackPosition = radius + RADIUS_PADDING + SCREEN_PADDING;
@@ -155,7 +195,7 @@ const TeamCommunication: FC = () => {
     const midY = (sourceY + targetY) / 2;
 
     // Define arc height adjustment based on index
-    const arcHeight = 30 + index * 20;
+    const arcHeight = 15 + index * 10;
 
     // Calculate the control point in 2D space where the arcs will meet
     const deltaX = targetX - sourceX;
@@ -198,7 +238,11 @@ const TeamCommunication: FC = () => {
                   stopOpacity={1}
                   stopColor={edge.source.color}
                 />
-
+                <stop
+                  offset="75%"
+                  stopOpacity={1}
+                  stopColor={edge.source.color}
+                />
                 <stop
                   offset="100%"
                   stopOpacity={1}
@@ -219,7 +263,11 @@ const TeamCommunication: FC = () => {
                   stopOpacity={1}
                   stopColor={edge.target.color}
                 />
-
+                <stop
+                  offset="75%"
+                  stopOpacity={1}
+                  stopColor={edge.target.color}
+                />
                 <stop
                   offset="100%"
                   stopOpacity={1}
@@ -330,7 +378,7 @@ const TeamCommunication: FC = () => {
               cx={node.x}
               cy={node.y}
               r={node.radius}
-              fill={node.color}
+              fill={node.color || 'transparent'}
               initial={{
                 opacity: 0,
                 cx: width / 2,
@@ -342,30 +390,22 @@ const TeamCommunication: FC = () => {
                 cx: node.x,
                 cy: node.y,
                 r: node.radius,
-                filter: active === node.id ? 'url(#glow)' : '',
               }}
-              filter={active === node.id ? 'url(#glow)' : ''}
-              onAnimationComplete={() =>
-                setTimeout(() => {
-                  setActive('');
-                }, 2000)
-              }
               transition={{
                 duration: 1.5,
                 ease: easingCubic,
               }}
             />
-            {active === node.id && (
+            {active === node.id && !hasRendered && (
               <motion.circle
                 id={node.name}
                 key={`node-${node.id}-${i}`}
                 cx={node.x}
                 cy={node.y}
                 r={node.radius}
-                fill={node.color}
+                fill={node.color || 'transparent'}
                 initial={{
                   opacity: 0,
-
                   filter: '',
                 }}
                 animate={{
@@ -403,7 +443,7 @@ const TeamCommunication: FC = () => {
         transition={{
           duration: 1, // Fade-out transition duration of 5s
           delay: 3, // Add delay before opacity transitions
-          ease: 'easeInOut',
+          ease: easingCubic,
         }}
         textAnchor="left"
         fill="white"

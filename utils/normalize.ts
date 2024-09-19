@@ -1,5 +1,5 @@
 import { Node } from '@/components/team-communication/TeamCommunication';
-import { SCREEN_PADDING } from '@/configs/styling';
+import { RADIUS_PADDING, SCREEN_PADDING } from '@/configs/styling';
 import { MetricForDisplayType, MetricTypes } from '@/types/display-types';
 export interface MetricBody {
   [key: `sensor-${number}`]: MetricNode<object>;
@@ -56,8 +56,6 @@ export const resolveCollisions = (
   width: number,
   height: number
 ): Node[] => {
-  const collisionPadding = 16; // Extra padding to avoid tight overlaps
-
   for (let i = 0; i < nodes.length; i++) {
     for (let j = i + 1; j < nodes.length; j++) {
       const nodeA = nodes[i];
@@ -66,7 +64,7 @@ export const resolveCollisions = (
       const dx = nodeA.x - nodeB.x;
       const dy = nodeA.y - nodeB.y;
       const distance = Math.sqrt(dx * dx + dy * dy);
-      const minDistance = nodeA.radius + nodeB.radius + collisionPadding;
+      const minDistance = nodeA.radius + nodeB.radius + RADIUS_PADDING;
 
       if (distance < minDistance) {
         // Calculate overlap and resolve by shifting the nodes apart
@@ -97,4 +95,33 @@ export const resolveCollisions = (
   }
 
   return nodes;
+};
+
+export const calculatePreferredWhiteSpace = (
+  width: number,
+  height: number,
+  ratio: [number, number]
+): number => {
+  const [preferredWidth, preferredHeight] = ratio;
+
+  const widthWhiteSpace = width * (0.99 + preferredWidth / 100);
+  const heightWhiteSpace = height * (0.99 + preferredHeight / 100);
+
+  return widthWhiteSpace * heightWhiteSpace;
+};
+
+export const calulcateAvailableSpace = (space: number, whiteSpace: number) => {
+  return space - whiteSpace;
+};
+export const relativeTeamCommunicationMemberSize = (
+  messages: number,
+  availableSpace: number,
+  totalMessages: number,
+  absoluteRadius: number
+): number => {
+  const messageProportion = messages / totalMessages;
+
+  const scaledRadius = Math.sqrt(messageProportion * availableSpace) / 2;
+
+  return Math.max(scaledRadius, absoluteRadius);
 };
