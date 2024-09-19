@@ -425,7 +425,15 @@ const TeamCommunication: FC = () => {
                 textAnchor={'center'}
                 fontFamily={type === 'reaction' ? 'Apple Color Emoji' : 'Arial'}
                 fontWeight={300}
-                fontSize={width < 768 ? 12 : 16}
+                fontSize={
+                  type === 'reaction'
+                    ? width < 768
+                      ? 96
+                      : 128
+                    : width < 768
+                    ? 12
+                    : 16
+                }
                 initial={{
                   x: node.x - getTextWidth(node.name) / 2,
                   y: node.y,
@@ -436,7 +444,16 @@ const TeamCommunication: FC = () => {
                 animate={{
                   y: active === node.id ? node.y - node.radius - 20 : node.y,
                   opacity: active === node.id ? 1 : 0,
-                  fontSize: active === node.id ? (width < 768 ? 12 : 16) : 0,
+                  fontSize:
+                    active === node.id
+                      ? type === 'reaction'
+                        ? width < 768
+                          ? 96
+                          : 128
+                        : width < 768
+                        ? 12
+                        : 16
+                      : 0,
                 }}
                 onAnimationComplete={() =>
                   setTimeout(() => {
@@ -444,7 +461,7 @@ const TeamCommunication: FC = () => {
                   }, 2000)
                 }
                 transition={{
-                  duration: 1.5,
+                  duration: 1,
                   ease: easingCubic,
                 }}
               >

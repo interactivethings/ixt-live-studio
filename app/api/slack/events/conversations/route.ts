@@ -41,7 +41,7 @@ export const POST = async (req: NextRequest) => {
 
       if (userData) {
         // Update the last reaction timestamp
-        const reactionEmoji = emoji.get(event.reaction) || event.reaction;
+        const reactionEmoji = emoji.get(event.reaction) || '❌';
         await userRef.update({
           ...userData,
           reactions: userData.reactions ? userData.reactions + 1 : 1,
