@@ -44,6 +44,7 @@ export const POST = async (req: NextRequest) => {
         const reactionEmoji = emoji.get(event.reaction) || event.reaction;
         await userRef.update({
           ...userData,
+          reactions: userData.reactions ? userData.reactions + 1 : 1,
           lastReaction: reactionEmoji,
         });
       }
