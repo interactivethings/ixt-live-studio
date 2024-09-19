@@ -36,10 +36,33 @@ export const POST = async (req: NextRequest) => {
       );
     }
 
+    const db = admin.database();
+
+    // Handle Slack reaction events
+    if (type === 'event_callback' && event?.type === 'reaction_added') {
+      const user = await getFirebaseUser(event.user);
+      const userRef = db.ref(
+        `data/team-communication/sensor-1/value/${event.user}`
+      );
+
+      // Fetch existing user data
+      const snapshot = await userRef.once('value');
+      const userData = snapshot.val();
+
+      if (userData) {
+        // Update the last reaction timestamp
+        await userRef.update({
+          ...userData,
+          lastReaction: Date.now(),
+        });
+      }
+
+      return NextResponse.json({ success: true }, { status: 200 });
+    }
+
     // Handle Slack message events
     if (type === 'event_callback' && event?.type === 'message') {
       const user = await getFirebaseUser(event.user);
-      const db = admin.database();
       const userRef = db.ref(
         `data/team-communication/sensor-1/value/${event.user}`
       );
