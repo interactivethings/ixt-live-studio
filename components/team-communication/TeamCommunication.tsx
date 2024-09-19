@@ -238,7 +238,11 @@ const TeamCommunication: FC = () => {
                   stopOpacity={1}
                   stopColor={edge.source.color}
                 />
-
+                <stop
+                  offset="75%"
+                  stopOpacity={1}
+                  stopColor={edge.source.color}
+                />
                 <stop
                   offset="100%"
                   stopOpacity={1}
@@ -259,7 +263,11 @@ const TeamCommunication: FC = () => {
                   stopOpacity={1}
                   stopColor={edge.target.color}
                 />
-
+                <stop
+                  offset="75%"
+                  stopOpacity={1}
+                  stopColor={edge.target.color}
+                />
                 <stop
                   offset="100%"
                   stopOpacity={1}
@@ -370,7 +378,7 @@ const TeamCommunication: FC = () => {
               cx={node.x}
               cy={node.y}
               r={node.radius}
-              fill={node.color}
+              fill={node.color || 'transparent'}
               initial={{
                 opacity: 0,
                 cx: width / 2,
@@ -395,7 +403,7 @@ const TeamCommunication: FC = () => {
                 cx={node.x}
                 cy={node.y}
                 r={node.radius}
-                fill={node.color}
+                fill={node.color || 'transparent'}
                 initial={{
                   opacity: 0,
                   filter: '',
