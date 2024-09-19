@@ -329,7 +329,7 @@ const TeamCommunication: FC = () => {
                   targetNode.y,
                   msgIdx
                 );
-                const animationDelay = msgIdx * 0.2;
+                const animationDelay = (msgIdx + i + j) * 0.1;
 
                 return (
                   <motion.path
@@ -345,17 +345,15 @@ const TeamCommunication: FC = () => {
                       opacity: 0,
                       strokeWidth: hasRendered ? 20 : 10,
                       pathLength: 0,
-                      d: arcSourcePath,
                     }}
                     animate={{
                       opacity: 1,
                       strokeWidth: 1,
                       pathLength: 1,
-                      d: arcSourcePath,
                     }}
                     transition={{
                       duration: 1.5,
-                      delay: !hasRendered ? 1.5 + animationDelay : 0,
+                      delay: !hasRendered ? animationDelay : 0,
                       ease: easingCubic,
                     }}
                   />
@@ -370,8 +368,7 @@ const TeamCommunication: FC = () => {
                   msgIdx
                 );
 
-                const animationDelay = msgIdx * 0.1;
-
+                const animationDelay = (msgIdx + i + j) * 0.1;
                 return (
                   <motion.path
                     id={`target-${targetNode.id}-${msgIdx}-${targetNode.name}`}
@@ -386,17 +383,15 @@ const TeamCommunication: FC = () => {
                       opacity: 0,
                       strokeWidth: hasRendered ? 20 : 10,
                       pathLength: 0,
-                      d: arcTargetPath,
                     }}
                     animate={{
                       opacity: 1,
                       strokeWidth: 1,
                       pathLength: 1,
-                      d: arcTargetPath,
                     }}
                     transition={{
                       duration: 1.5,
-                      delay: !hasRendered ? 1.5 + 0.1 + animationDelay : 0,
+                      delay: !hasRendered ? 0.1 + animationDelay : 0,
                       ease: easingCubic,
                     }}
                   />
