@@ -8,6 +8,7 @@ export type MetricTypes = {
     messages: number;
     lastMessage: number;
     lastReaction: string;
+    reactions: number;
     color: string;
     connections: {
       [key: string]: {
