@@ -24,24 +24,12 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json({ challenge });
     }
 
-    // Ensure that event.user and event.channel are valid
-    if (
-      !event?.user ||
-      !event?.channel ||
-      typeof event.user !== 'string' ||
-      typeof event.channel !== 'string'
-    ) {
-      return NextResponse.json(
-        { error: 'Invalid user or channel information' },
-        { status: 400 }
-      );
-    }
-
     initializeFirebase();
     const db = admin.database();
 
     // Handle Slack reaction events
     if (type === 'event_callback' && event?.type === 'reaction_added') {
+      console.log(event);
       const userRef = db.ref(
         `data/team-communication/sensor-1/value/${event.user}`
       );
@@ -59,6 +47,19 @@ export const POST = async (req: NextRequest) => {
       }
 
       return NextResponse.json({ success: true }, { status: 200 });
+    }
+
+    // Ensure that event.user and event.channel are valid
+    if (
+      !event?.user ||
+      !event?.channel ||
+      typeof event.user !== 'string' ||
+      typeof event.channel !== 'string'
+    ) {
+      return NextResponse.json(
+        { error: 'Invalid user or channel information' },
+        { status: 400 }
+      );
     }
 
     // Handle Slack message events
