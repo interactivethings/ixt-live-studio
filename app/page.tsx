@@ -1,14 +1,11 @@
-import Screen from '@/components/display/Screen';
-import TeamMembers from '@/components/team-communication/TeamMembers';
+import TeamCommunication from '@/components/team-communication/TeamCommunication';
 import { DisplayProvider } from '@/contexts/display-context';
 
 const homePage = async () => {
   return (
     <div className="w-full h-full">
       <DisplayProvider>
-        <Screen>
-          <TeamMembers />
-        </Screen>
+        <TeamCommunication />
       </DisplayProvider>
     </div>
   );

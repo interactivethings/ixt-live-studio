@@ -23,41 +23,60 @@ export const POST = async (req: NextRequest) => {
       return NextResponse.json({ challenge });
     }
 
+    // Ensure that event.user and event.channel are valid
+    if (
+      !event?.user ||
+      !event?.channel ||
+      typeof event.user !== 'string' ||
+      typeof event.channel !== 'string'
+    ) {
+      return NextResponse.json(
+        { error: 'Invalid user or channel information' },
+        { status: 400 }
+      );
+    }
+
     // Handle Slack message events
     if (type === 'event_callback' && event?.type === 'message') {
       const user = await getFirebaseUser(event.user);
-
       const db = admin.database();
-      const ref = db.ref('data/team-communication/sensor-1/value');
+      const userRef = db.ref(
+        `data/team-communication/sensor-1/value/${event.user}`
+      );
 
-      const snapshot = await ref.child(event.user).once('value');
-      if (snapshot.exists()) {
-        const data = snapshot.val();
+      // Fetch existing user data
+      const snapshot = await userRef.once('value');
+      const userData = snapshot.val();
 
-        await ref.child(event.user).update({
-          ...data,
-          messages: data.messages + 1,
-          characters: data.characters + event.text.length,
+      if (userData) {
+        // Update the existing user data
+        await userRef.update({
+          ...userData,
+          messages: userData.messages + 1,
+          characters: userData.characters + event.text.length,
           lastMessage: Date.now(),
-          connections: {
-            [event.channel]: data.connections[event.channel]
-              ? {
-                  messages: data.connections[event.channel].messages + 1,
-                  characters:
-                    data.connections[event.channel].characters +
-                    event.text.length,
-                }
-              : {
-                  messages: 1,
-                  characters: event.text.length,
-                },
-          },
         });
+
+        const connectionRef = userRef.child('connections');
+        const existingConnection = userData.connections?.[event.channel];
+
+        if (existingConnection) {
+          await connectionRef.child(event.channel).update({
+            messages: existingConnection.messages + 1,
+            characters: existingConnection.characters + event.text.length,
+          });
+        } else {
+          await connectionRef.child(event.channel).set({
+            messages: 1,
+            characters: event.text.length,
+          });
+        }
       } else {
-        await ref.child(event.user).set({
+        // Create new user data if it doesn't exist
+        await userRef.set({
           ...user,
-          characters: event.text.length,
           messages: 1,
+          characters: event.text.length,
           lastMessage: Date.now(),
           connections: {
             [event.channel]: {
