@@ -53,7 +53,7 @@ export const POST = async (req: NextRequest) => {
         // Update the last reaction timestamp
         await userRef.update({
           ...userData,
-          lastReaction: Date.now(),
+          lastReaction: event.reaction,
         });
       }
 
