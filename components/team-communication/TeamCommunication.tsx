@@ -81,7 +81,11 @@ const TeamCommunication: FC = () => {
 
   // Use an effect to set hasRendered to true after the first render
   useEffect(() => {
-    setHasRendered(true); // Mark component as rendered after first mount
+    const id = setTimeout(() => {
+      setHasRendered(true); // Mark component as rendered after first mount
+    }, 500);
+
+    return () => clearTimeout(id);
   }, []);
 
   useEffect(() => {
@@ -108,25 +112,22 @@ const TeamCommunication: FC = () => {
 
         const fallbackPosition = radius + RADIUS_PADDING + SCREEN_PADDING;
         const existingNode = nodes.find((node) => node.id === member.id);
-        if (member.name === 'Noah' || member.name === 'Ana') {
-          console.log('existingNode', existingNode);
-        }
+
+        const x = Math.max(
+          fallbackPosition,
+          Math.min(Math.random() * width, width - fallbackPosition)
+        );
+
+        const y = Math.max(
+          fallbackPosition,
+          Math.min(Math.random() * height, height - fallbackPosition)
+        );
+
         if (existingNode) {
           const hasChangedMessage = existingNode?.messages !== member.messages;
 
           const hasChangedReaction =
             existingNode?.reactions !== member.reactions;
-
-          if (member.name === 'Noah' || member.name === 'Ana') {
-            console.log(
-              existingNode?.messages,
-              member.messages,
-              existingNode?.lastReaction,
-              member.lastReaction,
-              member.name,
-              member.id
-            );
-          }
 
           if (hasChangedMessage) {
             setType('message');
@@ -141,6 +142,8 @@ const TeamCommunication: FC = () => {
           if (existingNode) {
             return {
               ...existingNode,
+              x,
+              y,
               messages: member.messages,
               characters: member.characters,
               reactions: member.reactions,
@@ -151,15 +154,6 @@ const TeamCommunication: FC = () => {
             };
           }
         }
-        const x = Math.max(
-          fallbackPosition,
-          Math.min(Math.random() * width, width - fallbackPosition)
-        );
-
-        const y = Math.max(
-          fallbackPosition,
-          Math.min(Math.random() * height, height - fallbackPosition)
-        );
 
         return {
           ...member,
@@ -213,7 +207,7 @@ const TeamCommunication: FC = () => {
     const midY = (sourceY + targetY) / 2;
 
     // Define arc height adjustment based on index
-    const arcHeight = 15 + index * 10;
+    const arcHeight = 30 + index * 20;
 
     // Calculate the control point in 2D space where the arcs will meet
     const deltaX = targetX - sourceX;
@@ -232,9 +226,27 @@ const TeamCommunication: FC = () => {
   return (
     <svg width={width} height={height}>
       <defs>
-        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="10" result="coloredBlur" />
+        <filter id="glow" x="-200%" y="-200%" width="800%" height="800%">
+          <feGaussianBlur stdDeviation="30" result="coloredBlur" />
+
           <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        <filter id="glow-super" x="-200%" y="-200%" width="800%" height="800%">
+          <feGaussianBlur stdDeviation="60" result="coloredBlur" />
+
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="coloredBlur" />
             <feMergeNode in="coloredBlur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
@@ -329,20 +341,22 @@ const TeamCommunication: FC = () => {
                     stroke={`url(#source-${sourceNode.id}-${
                       sourceNode.color.split('#')[1]
                     }-${targetNode.color.split('#')[1]}`}
-                    strokeWidth="2"
+                    strokeWidth="1"
                     initial={{
                       opacity: 0,
-                      strokeWidth: 10,
+                      strokeWidth: hasRendered ? 20 : 10,
                       pathLength: 0,
+                      d: arcSourcePath,
                     }}
                     animate={{
                       opacity: 1,
-                      strokeWidth: 2,
+                      strokeWidth: 1,
                       pathLength: 1,
+                      d: arcSourcePath,
                     }}
                     transition={{
                       duration: 1.5,
-                      delay: hasRendered ? 1.5 + animationDelay : 0,
+                      delay: !hasRendered ? 1.5 + animationDelay : 0,
                       ease: easingCubic,
                     }}
                   />
@@ -357,7 +371,7 @@ const TeamCommunication: FC = () => {
                   msgIdx
                 );
 
-                const animationDelay = msgIdx * 0.2;
+                const animationDelay = msgIdx * 0.1;
 
                 return (
                   <motion.path
@@ -368,20 +382,22 @@ const TeamCommunication: FC = () => {
                     stroke={`url(#target-${targetNode.id}-${
                       targetNode.color.split('#')[1]
                     }-${sourceNode.color.split('#')[1]}`}
-                    strokeWidth="2"
+                    strokeWidth="1"
                     initial={{
                       opacity: 0,
-                      strokeWidth: 10,
+                      strokeWidth: hasRendered ? 20 : 10,
                       pathLength: 0,
+                      d: arcTargetPath,
                     }}
                     animate={{
                       opacity: 1,
-                      strokeWidth: 2,
+                      strokeWidth: 1,
                       pathLength: 1,
+                      d: arcTargetPath,
                     }}
                     transition={{
                       duration: 1.5,
-                      delay: hasRendered ? 1.5 + 0.1 + animationDelay : 0,
+                      delay: !hasRendered ? 1.5 + 0.1 + animationDelay : 0,
                       ease: easingCubic,
                     }}
                   />
@@ -412,6 +428,7 @@ const TeamCommunication: FC = () => {
                 cx: node.x,
                 cy: node.y,
                 r: node.radius,
+                filter: 'url(#glow)',
               }}
               transition={{
                 duration: 1.5,
@@ -485,7 +502,7 @@ const TeamCommunication: FC = () => {
                   opacity: 1,
 
                   r: node.radius,
-                  filter: 'url(#glow)',
+                  filter: 'url(#glow-super)',
                 }}
                 onAnimationComplete={() =>
                   setTimeout(() => {
