@@ -71,7 +71,7 @@ const TeamCommunication: FC = () => {
     if (hasRendered) {
       const id = setTimeout(() => {
         setTextOpacity(false);
-      }, 5000);
+      }, 15000);
 
       return () => {
         clearTimeout(id);
@@ -525,7 +525,7 @@ const TeamCommunication: FC = () => {
           y: -100,
         }}
         animate={{
-          opacity: textOpacity ? 1 : 0, // Smooth transition
+          opacity: textOpacity ? 1 : width < 664 ? 1 : 0, // Smooth transition
           y: 40,
         }}
         transition={{
