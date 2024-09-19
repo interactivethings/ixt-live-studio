@@ -171,8 +171,6 @@ const TeamCommunication: FC = () => {
     return `M ${sourceX},${sourceY} Q ${controlPointX},${controlPointY} ${targetX},${targetY}`;
   };
 
-  console.log(width);
-
   return (
     <svg width={width} height={height}>
       <defs>
@@ -367,14 +365,12 @@ const TeamCommunication: FC = () => {
                 fill={node.color}
                 initial={{
                   opacity: 0,
-                  cx: width / 2,
-                  cy: height / 2,
+
                   filter: '',
                 }}
                 animate={{
                   opacity: 1,
-                  cx: node.x,
-                  cy: node.y,
+
                   r: node.radius,
                   filter: 'url(#glow)',
                 }}
