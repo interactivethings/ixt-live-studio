@@ -142,3 +142,20 @@ export const getTextWidth = (
 
   return ctx.measureText(text).width;
 };
+
+export const calculateStrokeWidth = (t: number, min = 1, max = 20) => {
+  const amplitude = (max - min) / 2;
+  const offset = (max + min) / 2;
+
+  // Sinusoidal oscillation with amplitude and offset
+  const strokeWidth = amplitude * Math.sin(t) + offset;
+
+  return strokeWidth;
+};
+
+export const updateStrokeWidths = (t: number): [number, number] => {
+  const initialStrokeWidth = calculateStrokeWidth(t * 0.5);
+  const animatedStrokeWidth = calculateStrokeWidth(t * 0.5 + Math.PI / 2); // Phase shift for animation
+
+  return [initialStrokeWidth, animatedStrokeWidth];
+};

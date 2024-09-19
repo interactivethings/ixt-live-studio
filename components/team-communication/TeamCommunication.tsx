@@ -81,7 +81,11 @@ const TeamCommunication: FC = () => {
 
   // Use an effect to set hasRendered to true after the first render
   useEffect(() => {
-    setHasRendered(true); // Mark component as rendered after first mount
+    const id = setTimeout(() => {
+      setHasRendered(true); // Mark component as rendered after first mount
+    }, 500);
+
+    return () => clearTimeout(id);
   }, []);
 
   useEffect(() => {
@@ -116,17 +120,6 @@ const TeamCommunication: FC = () => {
 
           const hasChangedReaction =
             existingNode?.reactions !== member.reactions;
-
-          if (member.name === 'Noah' || member.name === 'Ana') {
-            console.log(
-              existingNode?.messages,
-              member.messages,
-              existingNode?.lastReaction,
-              member.lastReaction,
-              member.name,
-              member.id
-            );
-          }
 
           if (hasChangedMessage) {
             setType('message');
@@ -213,7 +206,7 @@ const TeamCommunication: FC = () => {
     const midY = (sourceY + targetY) / 2;
 
     // Define arc height adjustment based on index
-    const arcHeight = 15 + index * 10;
+    const arcHeight = 30 + index * 20;
 
     // Calculate the control point in 2D space where the arcs will meet
     const deltaX = targetX - sourceX;
@@ -232,8 +225,8 @@ const TeamCommunication: FC = () => {
   return (
     <svg width={width} height={height}>
       <defs>
-        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="10" result="coloredBlur" />
+        <filter id="glow" x="-100%" y="-100%" width="400%" height="400%">
+          <feGaussianBlur stdDeviation="20" result="coloredBlur" />
           <feMerge>
             <feMergeNode in="coloredBlur" />
             <feMergeNode in="SourceGraphic" />
@@ -329,20 +322,20 @@ const TeamCommunication: FC = () => {
                     stroke={`url(#source-${sourceNode.id}-${
                       sourceNode.color.split('#')[1]
                     }-${targetNode.color.split('#')[1]}`}
-                    strokeWidth="2"
+                    strokeWidth="1"
                     initial={{
                       opacity: 0,
-                      strokeWidth: 10,
+                      strokeWidth: hasRendered ? 20 : 10,
                       pathLength: 0,
                     }}
                     animate={{
                       opacity: 1,
-                      strokeWidth: 2,
+                      strokeWidth: 1,
                       pathLength: 1,
                     }}
                     transition={{
                       duration: 1.5,
-                      delay: hasRendered ? 1.5 + animationDelay : 0,
+                      delay: !hasRendered ? 1.5 + animationDelay : 0,
                       ease: easingCubic,
                     }}
                   />
@@ -357,7 +350,8 @@ const TeamCommunication: FC = () => {
                   msgIdx
                 );
 
-                const animationDelay = msgIdx * 0.2;
+                const animationDelay = msgIdx * 0.1;
+                console.log(hasRendered);
 
                 return (
                   <motion.path
@@ -368,20 +362,20 @@ const TeamCommunication: FC = () => {
                     stroke={`url(#target-${targetNode.id}-${
                       targetNode.color.split('#')[1]
                     }-${sourceNode.color.split('#')[1]}`}
-                    strokeWidth="2"
+                    strokeWidth="1"
                     initial={{
                       opacity: 0,
-                      strokeWidth: 10,
+                      strokeWidth: hasRendered ? 20 : 10,
                       pathLength: 0,
                     }}
                     animate={{
                       opacity: 1,
-                      strokeWidth: 2,
+                      strokeWidth: 1,
                       pathLength: 1,
                     }}
                     transition={{
                       duration: 1.5,
-                      delay: hasRendered ? 1.5 + 0.1 + animationDelay : 0,
+                      delay: !hasRendered ? 1.5 + 0.1 + animationDelay : 0,
                       ease: easingCubic,
                     }}
                   />
@@ -394,30 +388,6 @@ const TeamCommunication: FC = () => {
       {nodes.map((node, i) => {
         return (
           <>
-            <motion.circle
-              key={`node-circle-${node.id}-${i}`}
-              cx={node.x}
-              cy={node.y}
-              r={node.radius}
-              fill={node.color || 'transparent'}
-              initial={{
-                opacity: 0,
-                cx: width / 2,
-                cy: height / 2,
-                r: node.radius,
-                filter: '',
-              }}
-              animate={{
-                opacity: 1,
-                cx: node.x,
-                cy: node.y,
-                r: node.radius,
-              }}
-              transition={{
-                duration: 1.5,
-                ease: easingCubic,
-              }}
-            />
             {hasRendered && (
               <motion.text
                 key={`text-${node.id}-${i}`}
@@ -468,36 +438,31 @@ const TeamCommunication: FC = () => {
                 {type === 'message' ? node.name : node.lastReaction}
               </motion.text>
             )}
-            {active === node.id && hasRendered && (
-              <motion.circle
-                id={node.name}
-                key={`node-glow-circle-${node.id}-${i}`}
-                cx={node.x}
-                cy={node.y}
-                r={node.radius}
-                fill={node.color || 'transparent'}
-                initial={{
-                  opacity: 0,
-                  filter: '',
-                  r: node.radius,
-                }}
-                animate={{
-                  opacity: 1,
-
-                  r: node.radius,
-                  filter: 'url(#glow)',
-                }}
-                onAnimationComplete={() =>
-                  setTimeout(() => {
-                    setActive('');
-                  }, 2000)
-                }
-                transition={{
-                  duration: 1.5,
-                  ease: easingCubic,
-                }}
-              />
-            )}
+            <motion.circle
+              key={`node-circle-${node.id}-${i}`}
+              cx={node.x}
+              cy={node.y}
+              r={node.radius}
+              fill={node.color || 'transparent'}
+              initial={{
+                opacity: 0,
+                cx: width / 2,
+                cy: height / 2,
+                r: node.radius,
+                filter: '',
+              }}
+              animate={{
+                opacity: 1,
+                cx: node.x,
+                cy: node.y,
+                r: node.radius,
+                filter: 'url(#glow)',
+              }}
+              transition={{
+                duration: 1.5,
+                ease: easingCubic,
+              }}
+            />
           </>
         );
       })}
