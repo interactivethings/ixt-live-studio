@@ -112,9 +112,17 @@ const TeamCommunication: FC = () => {
 
         const fallbackPosition = radius + RADIUS_PADDING + SCREEN_PADDING;
         const existingNode = nodes.find((node) => node.id === member.id);
-        if (member.name === 'Noah' || member.name === 'Ana') {
-          console.log('existingNode', existingNode);
-        }
+
+        const x = Math.max(
+          fallbackPosition,
+          Math.min(Math.random() * width, width - fallbackPosition)
+        );
+
+        const y = Math.max(
+          fallbackPosition,
+          Math.min(Math.random() * height, height - fallbackPosition)
+        );
+
         if (existingNode) {
           const hasChangedMessage = existingNode?.messages !== member.messages;
 
@@ -134,6 +142,8 @@ const TeamCommunication: FC = () => {
           if (existingNode) {
             return {
               ...existingNode,
+              x,
+              y,
               messages: member.messages,
               characters: member.characters,
               reactions: member.reactions,
@@ -144,15 +154,6 @@ const TeamCommunication: FC = () => {
             };
           }
         }
-        const x = Math.max(
-          fallbackPosition,
-          Math.min(Math.random() * width, width - fallbackPosition)
-        );
-
-        const y = Math.max(
-          fallbackPosition,
-          Math.min(Math.random() * height, height - fallbackPosition)
-        );
 
         return {
           ...member,
@@ -225,9 +226,27 @@ const TeamCommunication: FC = () => {
   return (
     <svg width={width} height={height}>
       <defs>
-        <filter id="glow" x="-100%" y="-100%" width="400%" height="400%">
-          <feGaussianBlur stdDeviation="20" result="coloredBlur" />
+        <filter id="glow" x="-200%" y="-200%" width="800%" height="800%">
+          <feGaussianBlur stdDeviation="30" result="coloredBlur" />
+
           <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+
+        <filter id="glow-super" x="-200%" y="-200%" width="800%" height="800%">
+          <feGaussianBlur stdDeviation="60" result="coloredBlur" />
+
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="coloredBlur" />
             <feMergeNode in="coloredBlur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
@@ -327,11 +346,13 @@ const TeamCommunication: FC = () => {
                       opacity: 0,
                       strokeWidth: hasRendered ? 20 : 10,
                       pathLength: 0,
+                      d: arcSourcePath,
                     }}
                     animate={{
                       opacity: 1,
                       strokeWidth: 1,
                       pathLength: 1,
+                      d: arcSourcePath,
                     }}
                     transition={{
                       duration: 1.5,
@@ -351,7 +372,6 @@ const TeamCommunication: FC = () => {
                 );
 
                 const animationDelay = msgIdx * 0.1;
-                console.log(hasRendered);
 
                 return (
                   <motion.path
@@ -367,11 +387,13 @@ const TeamCommunication: FC = () => {
                       opacity: 0,
                       strokeWidth: hasRendered ? 20 : 10,
                       pathLength: 0,
+                      d: arcTargetPath,
                     }}
                     animate={{
                       opacity: 1,
                       strokeWidth: 1,
                       pathLength: 1,
+                      d: arcTargetPath,
                     }}
                     transition={{
                       duration: 1.5,
@@ -388,6 +410,31 @@ const TeamCommunication: FC = () => {
       {nodes.map((node, i) => {
         return (
           <>
+            <motion.circle
+              key={`node-circle-${node.id}-${i}`}
+              cx={node.x}
+              cy={node.y}
+              r={node.radius}
+              fill={node.color || 'transparent'}
+              initial={{
+                opacity: 0,
+                cx: width / 2,
+                cy: height / 2,
+                r: node.radius,
+                filter: '',
+              }}
+              animate={{
+                opacity: 1,
+                cx: node.x,
+                cy: node.y,
+                r: node.radius,
+                filter: 'url(#glow)',
+              }}
+              transition={{
+                duration: 1.5,
+                ease: easingCubic,
+              }}
+            />
             {hasRendered && (
               <motion.text
                 key={`text-${node.id}-${i}`}
@@ -438,31 +485,36 @@ const TeamCommunication: FC = () => {
                 {type === 'message' ? node.name : node.lastReaction}
               </motion.text>
             )}
-            <motion.circle
-              key={`node-circle-${node.id}-${i}`}
-              cx={node.x}
-              cy={node.y}
-              r={node.radius}
-              fill={node.color || 'transparent'}
-              initial={{
-                opacity: 0,
-                cx: width / 2,
-                cy: height / 2,
-                r: node.radius,
-                filter: '',
-              }}
-              animate={{
-                opacity: 1,
-                cx: node.x,
-                cy: node.y,
-                r: node.radius,
-                filter: 'url(#glow)',
-              }}
-              transition={{
-                duration: 1.5,
-                ease: easingCubic,
-              }}
-            />
+            {active === node.id && hasRendered && (
+              <motion.circle
+                id={node.name}
+                key={`node-glow-circle-${node.id}-${i}`}
+                cx={node.x}
+                cy={node.y}
+                r={node.radius}
+                fill={node.color || 'transparent'}
+                initial={{
+                  opacity: 0,
+                  filter: '',
+                  r: node.radius,
+                }}
+                animate={{
+                  opacity: 1,
+
+                  r: node.radius,
+                  filter: 'url(#glow-super)',
+                }}
+                onAnimationComplete={() =>
+                  setTimeout(() => {
+                    setActive('');
+                  }, 2000)
+                }
+                transition={{
+                  duration: 1.5,
+                  ease: easingCubic,
+                }}
+              />
+            )}
           </>
         );
       })}
