@@ -8,6 +8,7 @@ import {
   calculatePreferredWhiteSpace,
   calulcateAvailableSpace,
   getMetricType,
+  getTextWidth,
   relativeTeamCommunicationMemberSize,
   resolveCollisions,
 } from '@/utils/normalize';
@@ -95,37 +96,32 @@ const TeamCommunication: FC = () => {
 
     let updatedNodes: Node[] = displayData.flatMap((sensor) =>
       sensor.value.map((member, i) => {
-        console.log(
-          relativeTeamCommunicationMemberSize(
-            member.messages,
-            availableSpace,
-            totalMessages,
-            defaultMemberSize
-          )
-        );
         const radius = relativeTeamCommunicationMemberSize(
           member.messages,
           availableSpace,
           totalMessages,
           defaultMemberSize
         );
-        const existingNode = nodes.find((node) => node.name === member.name);
-        const hasChanged = existingNode?.radius !== radius;
+
         const fallbackPosition = radius + RADIUS_PADDING + SCREEN_PADDING;
-
-        if (hasChanged) {
-          setActive(member.id);
-        }
-
-        const connections = member.connections || {};
-
+        const existingNode = nodes.find((node) => node.id === member.id);
         if (existingNode) {
-          return {
-            ...existingNode,
-            radius,
-            change: hasChanged,
-            connections, // Ensure connections are updated from member
-          };
+          const hasChanged = existingNode?.messages !== member.messages; // Only c
+
+          if (hasChanged) {
+            setActive(member?.id || '');
+          }
+
+          const connections = member.connections || {};
+
+          if (existingNode) {
+            return {
+              ...existingNode,
+              radius,
+              change: hasChanged,
+              connections, // Ensure connections are updated from member
+            };
+          }
         }
         const x = Math.max(
           fallbackPosition,
@@ -217,7 +213,7 @@ const TeamCommunication: FC = () => {
         </filter>
         {edges.map((edge, i) => {
           return (
-            <Fragment key={`gradient-${i}`}>
+            <Fragment key={`gradient-${i}-${edge.source.id}-${edge.target.id}`}>
               <linearGradient
                 id={`source-${String(edge.source.id)}-${
                   edge.source.color.split('#')[1]
@@ -278,18 +274,14 @@ const TeamCommunication: FC = () => {
         const sourceNode = nodes.find((node) => node.name === edge.source.name);
         if (!targetNode || !sourceNode) return null;
 
-        return edge.connection.map((connection) => {
+        return edge.connection.map((connection, j) => {
           const sourceMessageCount =
             edge.source.connections[connection].messages;
           const targetMessageCount =
             edge.target.connections[connection].messages;
 
-          if (sourceNode.name === 'Patrick') {
-            console.log(edge);
-          }
-
           return (
-            <g key={`edge-${i}`}>
+            <g key={`edge-${i}-${connection}-${j}`}>
               {Array.from({ length: sourceMessageCount }).map((_, msgIdx) => {
                 const arcSourcePath = generateAlternatingArcPath(
                   sourceNode.x,
@@ -301,7 +293,7 @@ const TeamCommunication: FC = () => {
                 return (
                   <motion.path
                     id={`source-${sourceNode.id}-${msgIdx}-${sourceNode.name}`}
-                    key={`source-${sourceNode.id}-${msgIdx}`}
+                    key={`source-${sourceNode.id}-${msgIdx}-${connection}-${i}-${j}`}
                     d={arcSourcePath}
                     fill={'transparent'}
                     stroke={`url(#source-${sourceNode.id}-${
@@ -338,7 +330,7 @@ const TeamCommunication: FC = () => {
                 return (
                   <motion.path
                     id={`target-${targetNode.id}-${msgIdx}-${targetNode.name}`}
-                    key={`target-${targetNode.id}-${msgIdx}`}
+                    key={`target-${targetNode.id}-${msgIdx}-${connection}-${i}-${j}`}
                     d={arcTargetPath}
                     fill={'transparent'}
                     stroke={`url(#target-${targetNode.id}-${
@@ -368,14 +360,10 @@ const TeamCommunication: FC = () => {
         });
       })}
       {nodes.map((node, i) => {
-        if (node.name === 'Noah') {
-          console.log(node.id === active);
-        }
         return (
           <>
             <motion.circle
-              id={node.name}
-              key={`node-${node.name}-${i}`}
+              key={`node-circle-${node.id}-${i}`}
               cx={node.x}
               cy={node.y}
               r={node.radius}
@@ -384,6 +372,7 @@ const TeamCommunication: FC = () => {
                 opacity: 0,
                 cx: width / 2,
                 cy: height / 2,
+                r: node.radius,
                 filter: '',
               }}
               animate={{
@@ -397,10 +386,41 @@ const TeamCommunication: FC = () => {
                 ease: easingCubic,
               }}
             />
-            {active === node.id && !hasRendered && (
+            {hasRendered && (
+              <motion.text
+                key={`text-${node.id}-${i}`}
+                fill={'white'}
+                textAnchor={'center'}
+                fontFamily="Arial"
+                fontWeight={300}
+                fontSize={width < 768 ? 12 : 16}
+                initial={{
+                  x: node.x - getTextWidth(node.name) / 2,
+                  y: node.y,
+                  opacity: 0,
+                  radius: 0,
+                }}
+                animate={{
+                  y: active === node.id ? node.y - node.radius - 20 : node.y,
+                  opacity: active === node.id ? 1 : 0,
+                }}
+                onAnimationComplete={() =>
+                  setTimeout(() => {
+                    setActive('');
+                  }, 2000)
+                }
+                transition={{
+                  duration: 1.5,
+                  ease: easingCubic,
+                }}
+              >
+                {node.name}
+              </motion.text>
+            )}
+            {active === node.id && hasRendered && (
               <motion.circle
                 id={node.name}
-                key={`node-${node.id}-${i}`}
+                key={`node-glow-circle-${node.id}-${i}`}
                 cx={node.x}
                 cy={node.y}
                 r={node.radius}
@@ -408,6 +428,7 @@ const TeamCommunication: FC = () => {
                 initial={{
                   opacity: 0,
                   filter: '',
+                  r: node.radius,
                 }}
                 animate={{
                   opacity: 1,

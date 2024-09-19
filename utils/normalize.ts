@@ -125,3 +125,20 @@ export const relativeTeamCommunicationMemberSize = (
 
   return Math.max(scaledRadius, absoluteRadius);
 };
+
+let canvas: HTMLCanvasElement;
+let ctx: CanvasRenderingContext2D;
+
+export const getTextWidth = (
+  text: string,
+  options: { fontSize: number } = { fontSize: 16 }
+) => {
+  if (canvas === undefined && ctx === undefined) {
+    canvas = document.createElement('canvas');
+    ctx = canvas.getContext('2d') as CanvasRenderingContext2D;
+  }
+
+  ctx.font = `${options.fontSize}px Arial`;
+
+  return ctx.measureText(text).width;
+};
