@@ -61,7 +61,7 @@ exports.clearRealtimeDatabase = functions.pubsub
     try {
       const ref = rtdb.ref(pathToClear);
 
-      // await ref.remove();
+      await ref.remove();
       console.log(`Successfully cleared the path: ${pathToClear}`);
       return null;
     } catch (error) {
