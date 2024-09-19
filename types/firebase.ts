@@ -9,7 +9,7 @@ export interface Metric {
 export interface Config {
   type: ConfigType;
   defaults: {
-    [key: string]: number;
+    [key: string]: number | [number, number];
   };
 }
 
