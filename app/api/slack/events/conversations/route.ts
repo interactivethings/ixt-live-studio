@@ -52,6 +52,7 @@ export const POST = async (req: NextRequest) => {
         // Update the existing user data
         await userRef.update({
           ...userData,
+          color: user.color,
           messages: userData.messages + 1,
           characters: userData.characters + event.text.length,
           lastMessage: Date.now(),
