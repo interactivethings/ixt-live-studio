@@ -40,7 +40,6 @@ export const POST = async (req: NextRequest) => {
 
     // Handle Slack reaction events
     if (type === 'event_callback' && event?.type === 'reaction_added') {
-      const user = await getFirebaseUser(event.user);
       const userRef = db.ref(
         `data/team-communication/sensor-1/value/${event.user}`
       );
@@ -53,7 +52,7 @@ export const POST = async (req: NextRequest) => {
         // Update the last reaction timestamp
         await userRef.update({
           ...userData,
-          lastReaction: Date.now(),
+          lastReaction: event.reaction,
         });
       }
 
