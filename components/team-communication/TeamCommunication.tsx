@@ -21,6 +21,7 @@ export interface Node {
   messages: number;
   characters: number;
   lastMessage: number;
+  lastReaction: string;
   x: number;
   y: number;
   radius: number;
@@ -48,6 +49,7 @@ const TeamCommunication: FC = () => {
   const [hasRendered, setHasRendered] = useState(false);
   const [textOpacity, setTextOpacity] = useState(true);
   const [active, setActive] = useState<string>('');
+  const [type, setType] = useState<string>('message');
   const { width, height } = useWindowDimensions();
   const whiteSpaceRatio = (metricConfigs?.config.defaults.ratio as [
     number,
@@ -106,10 +108,15 @@ const TeamCommunication: FC = () => {
         const fallbackPosition = radius + RADIUS_PADDING + SCREEN_PADDING;
         const existingNode = nodes.find((node) => node.id === member.id);
         if (existingNode) {
-          const hasChanged = existingNode?.messages !== member.messages; // Only c
+          const hasChanged = existingNode?.messages !== member.messages;
 
           if (hasChanged) {
-            setActive(member?.id || '');
+            const type =
+              existingNode?.lastReaction !== member.lastReaction
+                ? 'reaction'
+                : existingNode?.messages !== member.messages && 'message';
+            setActive(member.id || '');
+            setType(type || 'message');
           }
 
           const connections = member.connections || {};
@@ -290,6 +297,8 @@ const TeamCommunication: FC = () => {
                   targetNode.y,
                   msgIdx
                 );
+                const animationDelay = msgIdx * 0.2;
+
                 return (
                   <motion.path
                     id={`source-${sourceNode.id}-${msgIdx}-${sourceNode.name}`}
@@ -299,7 +308,7 @@ const TeamCommunication: FC = () => {
                     stroke={`url(#source-${sourceNode.id}-${
                       sourceNode.color.split('#')[1]
                     }-${targetNode.color.split('#')[1]}`}
-                    strokeWidth="1"
+                    strokeWidth="2"
                     initial={{
                       opacity: 0,
                       strokeWidth: 10,
@@ -307,12 +316,12 @@ const TeamCommunication: FC = () => {
                     }}
                     animate={{
                       opacity: 1,
-                      strokeWidth: 1,
+                      strokeWidth: 2,
                       pathLength: 1,
                     }}
                     transition={{
                       duration: 1.5,
-                      delay: hasRendered ? 1.5 : 0,
+                      delay: hasRendered ? 1.5 + animationDelay : 0,
                       ease: easingCubic,
                     }}
                   />
@@ -327,6 +336,8 @@ const TeamCommunication: FC = () => {
                   msgIdx
                 );
 
+                const animationDelay = msgIdx * 0.2;
+
                 return (
                   <motion.path
                     id={`target-${targetNode.id}-${msgIdx}-${targetNode.name}`}
@@ -336,7 +347,7 @@ const TeamCommunication: FC = () => {
                     stroke={`url(#target-${targetNode.id}-${
                       targetNode.color.split('#')[1]
                     }-${sourceNode.color.split('#')[1]}`}
-                    strokeWidth="1"
+                    strokeWidth="2"
                     initial={{
                       opacity: 0,
                       strokeWidth: 10,
@@ -344,12 +355,12 @@ const TeamCommunication: FC = () => {
                     }}
                     animate={{
                       opacity: 1,
-                      strokeWidth: 1,
+                      strokeWidth: 2,
                       pathLength: 1,
                     }}
                     transition={{
                       duration: 1.5,
-                      delay: hasRendered ? 1.5 : 0,
+                      delay: hasRendered ? 1.5 + 0.1 + animationDelay : 0,
                       ease: easingCubic,
                     }}
                   />
@@ -399,10 +410,12 @@ const TeamCommunication: FC = () => {
                   y: node.y,
                   opacity: 0,
                   radius: 0,
+                  fontSize: 0,
                 }}
                 animate={{
                   y: active === node.id ? node.y - node.radius - 20 : node.y,
                   opacity: active === node.id ? 1 : 0,
+                  fontSize: active === node.id ? (width < 768 ? 12 : 16) : 0,
                 }}
                 onAnimationComplete={() =>
                   setTimeout(() => {
@@ -414,7 +427,7 @@ const TeamCommunication: FC = () => {
                   ease: easingCubic,
                 }}
               >
-                {node.name}
+                {type === 'message' ? node.name : node.lastReaction}
               </motion.text>
             )}
             {active === node.id && hasRendered && (
