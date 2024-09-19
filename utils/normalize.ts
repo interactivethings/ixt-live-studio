@@ -56,7 +56,7 @@ export const resolveCollisions = (
   width: number,
   height: number
 ): Node[] => {
-  const collisionPadding = 5; // Extra padding to avoid tight overlaps
+  const collisionPadding = 16; // Extra padding to avoid tight overlaps
 
   for (let i = 0; i < nodes.length; i++) {
     for (let j = i + 1; j < nodes.length; j++) {

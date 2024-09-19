@@ -39,6 +39,20 @@ const TeamCommunication: FC = () => {
   const [nodes, setNodes] = useState<Node[]>([]);
   const [edges, setEdges] = useState<Edge[]>([]);
   const [hasRendered, setHasRendered] = useState(false);
+  const [textOpacity, setTextOpacity] = useState(true);
+  const [active, setActive] = useState<string>('');
+
+  useEffect(() => {
+    if (hasRendered) {
+      const id = setTimeout(() => {
+        setTextOpacity(false);
+      }, 5000);
+
+      return () => {
+        clearTimeout(id);
+      };
+    }
+  }, [hasRendered]);
 
   // Use an effect to set hasRendered to true after the first render
   useEffect(() => {
@@ -58,6 +72,10 @@ const TeamCommunication: FC = () => {
         const existingNode = nodes.find((node) => node.name === member.name);
         const hasChanged = existingNode?.radius !== radius;
         const fallbackPosition = radius + RADIUS_PADDING + SCREEN_PADDING;
+
+        if (hasChanged) {
+          setActive(member.id);
+        }
 
         const connections = member.connections || {};
 
@@ -153,9 +171,18 @@ const TeamCommunication: FC = () => {
     return `M ${sourceX},${sourceY} Q ${controlPointX},${controlPointY} ${targetX},${targetY}`;
   };
 
+  console.log(width);
+
   return (
     <svg width={width} height={height}>
       <defs>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="10" result="coloredBlur" />
+          <feMerge>
+            <feMergeNode in="coloredBlur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
         {edges.map((edge, i) => {
           return (
             <Fragment key={`gradient-${i}`}>
@@ -294,32 +321,102 @@ const TeamCommunication: FC = () => {
         );
       })}
       {nodes.map((node, i) => {
+        if (node.name === 'Noah') {
+          console.log(node.id === active);
+        }
         return (
-          <motion.circle
-            id={node.name}
-            key={`node-${node.name}-${i}`}
-            cx={node.x}
-            cy={node.y}
-            r={node.radius}
-            fill={node.color}
-            initial={{
-              opacity: 0,
-              cx: width / 2,
-              cy: height / 2,
-            }}
-            animate={{
-              opacity: 1,
-              cx: node.x,
-              cy: node.y,
-              r: node.radius,
-            }}
-            transition={{
-              duration: 1.5,
-              ease: easingCubic,
-            }}
-          />
+          <>
+            <motion.circle
+              id={node.name}
+              key={`node-${node.name}-${i}`}
+              cx={node.x}
+              cy={node.y}
+              r={node.radius}
+              fill={node.color}
+              initial={{
+                opacity: 0,
+                cx: width / 2,
+                cy: height / 2,
+                filter: '',
+              }}
+              animate={{
+                opacity: 1,
+                cx: node.x,
+                cy: node.y,
+                r: node.radius,
+                filter: active === node.id ? 'url(#glow)' : '',
+              }}
+              filter={active === node.id ? 'url(#glow)' : ''}
+              onAnimationComplete={() =>
+                setTimeout(() => {
+                  setActive('');
+                }, 2000)
+              }
+              transition={{
+                duration: 1.5,
+                ease: easingCubic,
+              }}
+            />
+            {active === node.id && (
+              <motion.circle
+                id={node.name}
+                key={`node-${node.id}-${i}`}
+                cx={node.x}
+                cy={node.y}
+                r={node.radius}
+                fill={node.color}
+                initial={{
+                  opacity: 0,
+                  cx: width / 2,
+                  cy: height / 2,
+                  filter: '',
+                }}
+                animate={{
+                  opacity: 1,
+                  cx: node.x,
+                  cy: node.y,
+                  r: node.radius,
+                  filter: 'url(#glow)',
+                }}
+                onAnimationComplete={() =>
+                  setTimeout(() => {
+                    setActive('');
+                  }, 2000)
+                }
+                transition={{
+                  duration: 1.5,
+                  ease: easingCubic,
+                }}
+              />
+            )}
+          </>
         );
       })}
+
+      <motion.text
+        x={40}
+        y={40}
+        initial={{
+          opacity: 1, // Start with full opacity
+          y: -100,
+        }}
+        animate={{
+          opacity: textOpacity ? 1 : 0, // Smooth transition
+          y: 40,
+        }}
+        transition={{
+          duration: 1, // Fade-out transition duration of 5s
+          delay: 3, // Add delay before opacity transitions
+          ease: 'easeInOut',
+        }}
+        textAnchor="left"
+        fill="white"
+        fontFamily="Arial"
+        fontWeight={600}
+        fontSize={width < 768 ? 28 : 56}
+      >
+        {displayData[0]?.title}
+      </motion.text>
     </svg>
   );
 };
