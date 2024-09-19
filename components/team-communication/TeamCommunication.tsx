@@ -33,7 +33,7 @@ export interface Node {
 export interface Edge {
   source: Node;
   target: Node;
-  connection: string;
+  connection: string[];
 }
 
 // Helper function to check for collisions
@@ -162,21 +162,15 @@ const TeamCommunication: FC = () => {
           const nodeKeys = Object.keys(node.connections);
           const targetKeys = Object.keys(targetNode.connections);
 
-          const matchingKey = nodeKeys.find((key) => targetKeys.includes(key));
+          const matchingKey = nodeKeys.filter((key) =>
+            targetKeys.includes(key)
+          );
           if (matchingKey) {
-            const edgeExists = newEdges.some(
-              (edge) =>
-                (edge.source === node && edge.target === targetNode) ||
-                (edge.source === targetNode && edge.target === node)
-            );
-
-            if (!edgeExists) {
-              newEdges.push({
-                source: node,
-                target: targetNode,
-                connection: matchingKey,
-              });
-            }
+            newEdges.push({
+              source: node,
+              target: targetNode,
+              connection: matchingKey,
+            });
           }
         }
       });
@@ -278,93 +272,100 @@ const TeamCommunication: FC = () => {
           );
         })}
       </defs>
+
       {edges.map((edge, i) => {
         const targetNode = nodes.find((node) => node.name === edge.target.name);
         const sourceNode = nodes.find((node) => node.name === edge.source.name);
         if (!targetNode || !sourceNode) return null;
 
-        const sourceMessageCount =
-          edge.source.connections[edge.connection].messages;
-        const targetMessageCount =
-          edge.target.connections[edge.connection].messages;
+        return edge.connection.map((connection) => {
+          const sourceMessageCount =
+            edge.source.connections[connection].messages;
+          const targetMessageCount =
+            edge.target.connections[connection].messages;
 
-        return (
-          <g key={`edge-${i}`}>
-            {Array.from({ length: sourceMessageCount }).map((_, msgIdx) => {
-              const arcSourcePath = generateAlternatingArcPath(
-                sourceNode.x,
-                sourceNode.y,
-                targetNode.x,
-                targetNode.y,
-                msgIdx
-              );
-              return (
-                <motion.path
-                  id={`source-${sourceNode.id}-${msgIdx}`}
-                  key={`source-${sourceNode.id}-${msgIdx}`}
-                  d={arcSourcePath}
-                  fill={'transparent'}
-                  stroke={`url(#source-${sourceNode.id}-${
-                    sourceNode.color.split('#')[1]
-                  }-${targetNode.color.split('#')[1]}`}
-                  strokeWidth="1"
-                  initial={{
-                    opacity: 0,
-                    strokeWidth: 10,
-                    pathLength: 0,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    strokeWidth: 1,
-                    pathLength: 1,
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    delay: hasRendered ? 1.5 : 0,
-                    ease: easingCubic,
-                  }}
-                />
-              );
-            })}
-            {Array.from({ length: targetMessageCount }).map((_, msgIdx) => {
-              const arcTargetPath = generateAlternatingArcPath(
-                targetNode.x,
-                targetNode.y,
-                sourceNode.x,
-                sourceNode.y,
-                msgIdx
-              );
+          if (sourceNode.name === 'Patrick') {
+            console.log(edge);
+          }
 
-              return (
-                <motion.path
-                  id={`target-${targetNode.id}-${msgIdx}`}
-                  key={`target-${targetNode.id}-${msgIdx}`}
-                  d={arcTargetPath}
-                  fill={'transparent'}
-                  stroke={`url(#target-${targetNode.id}-${
-                    targetNode.color.split('#')[1]
-                  }-${sourceNode.color.split('#')[1]}`}
-                  strokeWidth="1"
-                  initial={{
-                    opacity: 0,
-                    strokeWidth: 10,
-                    pathLength: 0,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    strokeWidth: 1,
-                    pathLength: 1,
-                  }}
-                  transition={{
-                    duration: 1.5,
-                    delay: hasRendered ? 1.5 : 0,
-                    ease: easingCubic,
-                  }}
-                />
-              );
-            })}
-          </g>
-        );
+          return (
+            <g key={`edge-${i}`}>
+              {Array.from({ length: sourceMessageCount }).map((_, msgIdx) => {
+                const arcSourcePath = generateAlternatingArcPath(
+                  sourceNode.x,
+                  sourceNode.y,
+                  targetNode.x,
+                  targetNode.y,
+                  msgIdx
+                );
+                return (
+                  <motion.path
+                    id={`source-${sourceNode.id}-${msgIdx}-${sourceNode.name}`}
+                    key={`source-${sourceNode.id}-${msgIdx}`}
+                    d={arcSourcePath}
+                    fill={'transparent'}
+                    stroke={`url(#source-${sourceNode.id}-${
+                      sourceNode.color.split('#')[1]
+                    }-${targetNode.color.split('#')[1]}`}
+                    strokeWidth="1"
+                    initial={{
+                      opacity: 0,
+                      strokeWidth: 10,
+                      pathLength: 0,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      strokeWidth: 1,
+                      pathLength: 1,
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      delay: hasRendered ? 1.5 : 0,
+                      ease: easingCubic,
+                    }}
+                  />
+                );
+              })}
+              {Array.from({ length: targetMessageCount }).map((_, msgIdx) => {
+                const arcTargetPath = generateAlternatingArcPath(
+                  targetNode.x,
+                  targetNode.y,
+                  sourceNode.x,
+                  sourceNode.y,
+                  msgIdx
+                );
+
+                return (
+                  <motion.path
+                    id={`target-${targetNode.id}-${msgIdx}-${targetNode.name}`}
+                    key={`target-${targetNode.id}-${msgIdx}`}
+                    d={arcTargetPath}
+                    fill={'transparent'}
+                    stroke={`url(#target-${targetNode.id}-${
+                      targetNode.color.split('#')[1]
+                    }-${sourceNode.color.split('#')[1]}`}
+                    strokeWidth="1"
+                    initial={{
+                      opacity: 0,
+                      strokeWidth: 10,
+                      pathLength: 0,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      strokeWidth: 1,
+                      pathLength: 1,
+                    }}
+                    transition={{
+                      duration: 1.5,
+                      delay: hasRendered ? 1.5 : 0,
+                      ease: easingCubic,
+                    }}
+                  />
+                );
+              })}
+            </g>
+          );
+        });
       })}
       {nodes.map((node, i) => {
         if (node.name === 'Noah') {
