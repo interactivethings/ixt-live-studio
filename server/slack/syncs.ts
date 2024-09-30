@@ -2,7 +2,7 @@ import { getFirebaseUser } from '@/server/firebase/utils';
 import { MessageEvent, ReactionAddedEvent } from '@/types/event';
 import { createError } from '@/utils/error-handling';
 import admin from 'firebase-admin';
-import emoji from 'node-emoji';
+import * as emoji from 'node-emoji';
 
 export const validateMessageSlackEvent = (event: MessageEvent) => {
   if (
