@@ -1,251 +1,370 @@
 {
-  "data": {
-    "team-communication": {
+  "team-communication": {
+    "title": "Team Communication",
+    "description": "This visualization showcases the conversations between team members.",
+    "sensors": {
       "sensor-1": {
-        "title": "Team Communication",
-        "id": "dfhjkdhf-dfhjdkoi90djk-djfkld",
+        "title": "Slack",
         "value": {
-          "member-1": {
-            "name": "Noah",
-            "characters": 3894,
-            "messages": 44,
-            "color": "#09253D",
-            "connections": {
-              "Ana": 15,
-              "Mark": 20,
-              "Lloyd": 9
-            }
-          },
-          "member-2": {
-            "name": "Ana",
-            "characters": 4123,
-            "messages": 50,
-            "color": "#B463D5",
-            "connections": {
-              "Noah": 12,
-              "Bartosz": 15,
-              "Michael": 23
-            }
-          },
-          "member-3": {
-            "name": "Lloyd",
-            "characters": 3567,
-            "messages": 39,
-            "color": "#8CDC5F",
-            "connections": {
-              "Noah": 8,
-              "Tania": 12,
-              "Kerstin": 19
-            }
-          },
-          "member-4": {
-            "name": "Michael",
-            "characters": 2900,
-            "messages": 28,
-            "color": "#4D9B68",
-            "connections": {
-              "Ana": 10,
-              "Bartosz": 8,
-              "Tania": 10
-            }
-          },
-          "member-5": {
-            "name": "Bartosz",
-            "characters": 4756,
-            "messages": 53,
-            "color": "#28567F",
-            "connections": {
-              "Noah": 13,
-              "Michael": 10,
-              "Christian": 30
-            }
-          },
-          "member-6": {
-            "name": "Christian",
-            "characters": 3370,
-            "messages": 30,
-            "color": "#45A7EF",
-            "connections": {
-              "Bartosz": 15,
-              "Jan": 15,
-              "Michela": 10
-            }
-          },
-          "member-7": {
-            "name": "Jan",
-            "characters": 4045,
-            "messages": 47,
-            "color": "#5CBA68",
-            "connections": {
-              "Christian": 12,
-              "Michela": 10,
-              "Benjamin": 25
-            }
-          },
-          "member-8": {
-            "name": "Michela",
-            "characters": 2995,
-            "messages": 27,
-            "color": "#F18430",
-            "connections": {
-              "Jan": 9,
-              "Tania": 10,
-              "Solange": 8
-            }
-          },
-          "member-9": {
-            "name": "Tania",
-            "characters": 5250,
-            "messages": 60,
-            "color": "#B7E345",
-            "connections": {
-              "Lloyd": 15,
-              "Michela": 20,
-              "Christian": 25
-            }
-          },
-          "member-10": {
-            "name": "Benjamin",
-            "characters": 3820,
-            "messages": 42,
-            "color": "#123B5B",
-            "connections": {
-              "Jan": 10,
-              "Christian": 12,
-              "Solange": 20
-            }
-          },
-          "member-11": {
-            "name": "Christoph",
-            "characters": 3100,
-            "messages": 34,
-            "color": "#427C62",
-            "connections": {
-              "Bartosz": 9,
-              "Michael": 10,
-              "Jan": 15
-            }
-          },
-          "member-12": {
-            "name": "Ira",
-            "characters": 4375,
-            "messages": 48,
+          "U01HR3WBQH4": {
+            "characters": 1868,
             "color": "#ACFAE2",
             "connections": {
-              "Solange": 15,
-              "Tomas": 13,
-              "Kerstin": 20
-            }
+              "C0259EHA7": {
+                "characters": 499,
+                "messages": 3
+              },
+              "C02TH2JL5A5": {
+                "characters": 430,
+                "messages": 1
+              },
+              "D07GGFRLS21": {
+                "characters": 939,
+                "messages": 8
+              }
+            },
+            "lastMessage": 1727699997616,
+            "lastReaction": "❌",
+            "messages": 12,
+            "name": "Ira",
+            "reactions": 13
           },
-          "member-13": {
-            "name": "Kerstin",
-            "characters": 3650,
-            "messages": 41,
-            "color": "#F7BB35",
-            "connections": {
-              "Ira": 12,
-              "Lloyd": 13,
-              "Tomas": 16
-            }
-          },
-          "member-14": {
-            "name": "Solange",
-            "characters": 2950,
-            "messages": 29,
-            "color": "#DC5B89",
-            "connections": {
-              "Michela": 9,
-              "Benjamin": 12,
-              "Ira": 8
-            }
-          },
-          "member-15": {
-            "name": "Tomas",
-            "characters": 4235,
-            "messages": 46,
-            "color": "#FBD749",
-            "connections": {
-              "Kerstin": 15,
-              "Ira": 16,
-              "Christoph": 15
-            }
-          },
-          "member-16": {
-            "name": "Joao",
-            "characters": 3600,
-            "messages": 40,
+          "U01RM0JP9LZ": {
+            "characters": 7,
             "color": "#3C5C55",
             "connections": {
-              "Noah": 15,
-              "Michela": 10,
-              "Jan": 15
-            }
+              "C0234TGPB6C": {
+                "characters": 7,
+                "messages": 1
+              }
+            },
+            "lastMessage": 1727684640164,
+            "lastReaction": "❌",
+            "messages": 1,
+            "name": "João",
+            "reactions": 2
           },
-          "member-17": {
-            "name": "Julia",
-            "characters": 3800,
-            "messages": 45,
-            "color": "#5A4BA2",
+          "U0259EHA3": {
+            "characters": 345,
+            "color": "#123B5B",
             "connections": {
-              "Noah": 20,
-              "Tania": 12,
-              "Joao": 13
-            }
+              "C05EP8ACVGC": {
+                "characters": 345,
+                "messages": 2
+              }
+            },
+            "lastMessage": 1727697414980,
+            "lastReaction": "🙌",
+            "messages": 2,
+            "name": "Benji",
+            "reactions": 1
           },
-          "member-18": {
-            "name": "Mark",
-            "characters": 4000,
-            "messages": 50,
-            "color": "#B95AA7",
+          "U025JCX64": {
+            "characters": 126,
+            "color": "#45A7EF",
             "connections": {
-              "Noah": 15,
-              "Solange": 18,
-              "Tania": 17
-            }
+              "C0259EHA7": {
+                "characters": 14,
+                "messages": 1
+              },
+              "C02TH2JL5A5": {
+                "characters": 112,
+                "messages": 1
+              }
+            },
+            "lastMessage": 1727701816768,
+            "messages": 2,
+            "name": "Chris"
           },
-          "member-19": {
-            "name": "Shuai",
-            "characters": 3400,
-            "messages": 35,
-            "color": "#5ED8CD",
+          "U025L7K50": {
+            "characters": 567,
+            "color": "#B7E345",
             "connections": {
-              "Tania": 10,
-              "Michela": 12,
-              "Noah": 13
-            }
+              "C0259EHA7": {
+                "characters": 72,
+                "messages": 1
+              },
+              "C0259ESAP": {
+                "characters": 335,
+                "messages": 1
+              },
+              "C07LM79FRQU": {
+                "characters": 160,
+                "messages": 1
+              }
+            },
+            "lastMessage": 1727697280360,
+            "lastReaction": "😃",
+            "messages": 3,
+            "name": "Tania",
+            "reactions": 4
           },
-          "member-20": {
-            "name": "Patrick",
-            "characters": 4100,
-            "messages": 49,
+          "U02CLT2HK47": {
+            "characters": 1289,
             "color": "#4D879C",
             "connections": {
-              "Kerstin": 15,
-              "Christoph": 14,
-              "Julia": 20
-            }
+              "C012NGMH09G": {
+                "characters": 886,
+                "messages": 6
+              },
+              "C0234TGPB6C": {
+                "characters": 29,
+                "messages": 1
+              },
+              "C0259ESAP": {
+                "characters": 65,
+                "messages": 1
+              },
+              "C061HL46TQT": {
+                "characters": 19,
+                "messages": 1
+              },
+              "C6PGS0GQ6": {
+                "characters": 85,
+                "messages": 1
+              },
+              "C6QGXPLBU": {
+                "characters": 205,
+                "messages": 1
+              }
+            },
+            "lastMessage": 1727699943006,
+            "lastReaction": "❌",
+            "messages": 11,
+            "name": "Patrick",
+            "reactions": 1
           },
-          "member-21": {
-            "name": "Gerhard",
-            "characters": 3850,
-            "messages": 43,
-            "color": "#F28F2A",
+          "U02CYJEN1PF": {
+            "characters": 591,
+            "color": "#28567F",
             "connections": {
-              "Patrick": 15,
-              "Noah": 13,
-              "Solange": 15
-            }
+              "C0234TGPB6C": {
+                "characters": 163,
+                "messages": 1
+              },
+              "C061HL46TQT": {
+                "characters": 243,
+                "messages": 2
+              },
+              "CGVUNMY5B": {
+                "characters": 185,
+                "messages": 3
+              }
+            },
+            "lastMessage": 1727703224998,
+            "lastReaction": "❌",
+            "messages": 6,
+            "name": "Bartosz",
+            "reactions": 4
           },
-          "member-22": {
-            "name": "Annina",
-            "characters": 3950,
-            "messages": 47,
-            "color": "#437375",
+          "U02KJBRDQUE": {
+            "characters": 141,
+            "color": "#5ED8CD",
             "connections": {
-              "Joao": 12,
-              "Patrick": 18,
-              "Shuai": 17
-            }
+              "C0133HYEMM4": {
+                "characters": 141,
+                "messages": 3
+              }
+            },
+            "lastMessage": 1727686173553,
+            "messages": 3,
+            "name": "Echo"
+          },
+          "U02SG64HHEF": {
+            "characters": 558,
+            "color": "#F18430",
+            "connections": {
+              "C0234TGPB6C": {
+                "characters": 171,
+                "messages": 1
+              },
+              "C0259EHA7": {
+                "characters": 172,
+                "messages": 2
+              },
+              "C03TPKG2P2P": {
+                "characters": 138,
+                "messages": 1
+              },
+              "C04JZSD0C4Q": {
+                "characters": 77,
+                "messages": 1
+              }
+            },
+            "lastMessage": 1727685989736,
+            "lastReaction": "❌",
+            "messages": 5,
+            "name": "Michela",
+            "reactions": 4
+          },
+          "U04M2UH1YQP": {
+            "characters": 603,
+            "color": "#8CDC5F",
+            "connections": {
+              "C055WT6DSHH": {
+                "characters": 409,
+                "messages": 2
+              },
+              "C069P3L0ABB": {
+                "characters": 194,
+                "messages": 4
+              }
+            },
+            "lastMessage": 1727682300761,
+            "lastReaction": "❌",
+            "messages": 6,
+            "name": "Lloyd",
+            "reactions": 4
+          },
+          "U04RNF2ANB0": {
+            "characters": 496,
+            "color": "#F7BB35",
+            "connections": {
+              "C0259EHA7": {
+                "characters": 124,
+                "messages": 3
+              },
+              "C028BRAU3": {
+                "characters": 180,
+                "messages": 1
+              },
+              "C05EP8ACVGC": {
+                "characters": 192,
+                "messages": 2
+              }
+            },
+            "lastMessage": 1727697336302,
+            "lastReaction": "❌",
+            "messages": 6,
+            "name": "Kerstin",
+            "reactions": 2
+          },
+          "U05804F530B": {
+            "characters": 1496,
+            "color": "#FF6537",
+            "connections": {
+              "C04JZSD0C4Q": {
+                "characters": 440,
+                "messages": 2
+              },
+              "C055WT6DSHH": {
+                "characters": 26,
+                "messages": 1
+              },
+              "C069P3L0ABB": {
+                "characters": 845,
+                "messages": 5
+              },
+              "D07N528S9SN": {
+                "characters": 185,
+                "messages": 1
+              }
+            },
+            "lastMessage": 1727683514214,
+            "lastReaction": "💯",
+            "messages": 9,
+            "name": "Florencia",
+            "reactions": 3
+          },
+          "U063DLUBDD1": {
+            "characters": 567,
+            "color": "#4D9B68",
+            "connections": {
+              "C0259EHA7": {
+                "characters": 67,
+                "messages": 1
+              },
+              "C04JZSD0C4Q": {
+                "characters": 366,
+                "messages": 1
+              },
+              "C069P3L0ABB": {
+                "characters": 134,
+                "messages": 1
+              }
+            },
+            "lastMessage": 1727685860206,
+            "lastReaction": "❌",
+            "messages": 3,
+            "name": "Muchi",
+            "reactions": 2
+          },
+          "U077KGEV7": {
+            "characters": 120,
+            "color": "#FBD749",
+            "connections": {
+              "C04LQSTRD71": {
+                "characters": 120,
+                "messages": 2
+              }
+            },
+            "lastMessage": 1727679997445,
+            "lastReaction": "❌",
+            "messages": 2,
+            "name": "Tomas",
+            "reactions": 1
+          },
+          "U07FJDREV7U": {
+            "characters": 529,
+            "color": "#09253D",
+            "connections": {
+              "C03TPKG2P2P": {
+                "characters": 84,
+                "messages": 2
+              },
+              "C04JZSD0C4Q": {
+                "characters": 37,
+                "messages": 1
+              },
+              "D07GGFRLS21": {
+                "characters": 389,
+                "messages": 6
+              },
+              "D07N528S9SN": {
+                "characters": 19,
+                "messages": 1
+              }
+            },
+            "lastMessage": 1727699250259,
+            "lastReaction": "👍",
+            "messages": 10,
+            "name": "Noah",
+            "reactions": 2
+          },
+          "U7BQNJ8CT": {
+            "characters": 3995,
+            "color": "#DC5B89",
+            "connections": {
+              "C012NGMH09G": {
+                "characters": 783,
+                "messages": 5
+              },
+              "C0234TGPB6C": {
+                "characters": 910,
+                "messages": 3
+              },
+              "C0259EHA7": {
+                "characters": 19,
+                "messages": 1
+              },
+              "C03TPKG2P2P": {
+                "characters": 323,
+                "messages": 2
+              },
+              "C04LQSTRD71": {
+                "characters": 1426,
+                "messages": 3
+              },
+              "CGVUNMY5B": {
+                "characters": 534,
+                "messages": 3
+              }
+            },
+            "lastMessage": 1727699925590,
+            "lastReaction": "❌",
+            "messages": 17,
+            "name": "Solange",
+            "reactions": 2
           }
         }
       }

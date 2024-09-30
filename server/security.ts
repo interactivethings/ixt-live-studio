@@ -1,5 +1,6 @@
+import { createError } from '@/utils/error-handling';
 import crypto from 'crypto';
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const verifySlackRequest = (
   rawBody: string,
@@ -23,4 +24,23 @@ export const verifySlackRequest = (
       Buffer.from(slackSignature, 'utf8')
     )
   );
+};
+
+export const validateWebhookEntry = async (req: NextRequest) => {
+  const rawBody = await req.text();
+
+  if (!verifySlackRequest(rawBody, req)) {
+    throw createError({
+      title: 'Invalid Slack signature',
+      message: 'The request signature is invalid',
+    });
+  }
+
+  const body = JSON.parse(rawBody);
+  const { type, challenge } = body;
+
+  // URL verification for Slack API
+  if (type === 'url_verification') {
+    return NextResponse.json({ challenge });
+  }
 };
