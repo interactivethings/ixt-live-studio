@@ -1,10 +1,14 @@
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
+import * as puppeteer from "puppeteer";
+import * as path from "path";
+import {Bucket} from "@google-cloud/storage";
 
 admin.initializeApp();
 
 const firestore = admin.firestore();
 const rtdb = admin.database();
+const storage = admin.storage();
 
 exports.updateActiveMetric = functions.pubsub
   .schedule("every 5 minutes")
@@ -59,9 +63,14 @@ exports.clearRealtimeDatabase = functions.pubsub
     const pathToClear = "/data";
 
     try {
-      const ref = rtdb.ref(pathToClear);
+      const bucket = storage.bucket();
+      const screenshotFilePath = await takeScreenshotAndUpload(bucket);
 
-      // await ref.remove();
+      console.log(`Screenshot saved at: ${screenshotFilePath}`);
+
+      const ref = rtdb.ref(pathToClear);
+      await ref.remove();
+
       console.log(`Successfully cleared the path: ${pathToClear}`);
       return null;
     } catch (error) {
@@ -69,3 +78,31 @@ exports.clearRealtimeDatabase = functions.pubsub
       return null;
     }
   });
+
+const takeScreenshotAndUpload = async (bucket: Bucket) => {
+  const browser = await puppeteer.launch({
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
+  const page = await browser.newPage();
+  const url = "https://ixt-live-studio.vercel.app";
+  await page.goto(url, {waitUntil: "networkidle2"});
+
+  await new Promise((resolve) => setTimeout(resolve, 60000));
+
+  const screenshotBuffer = await page.screenshot({fullPage: true});
+  const date = new Date().toISOString().split("T")[0];
+  const screenshotFileName = `snapshot_${date}.png`;
+
+  const file = bucket.file(screenshotFileName);
+
+  await file.save(screenshotBuffer, {
+    contentType: "image/png",
+    metadata: {
+      firebaseStorageDownloadTokens: Date.now(),
+    },
+  });
+
+  await browser.close();
+
+  return screenshotFileName;
+};
