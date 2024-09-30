@@ -1,51 +1,59 @@
 'use client';
 import { useRTDB } from '@/hooks/use-rtdb';
-import { MetricTypes } from '@/types/display-types';
+import { FormtattedDataBaseType } from '@/types/data';
+import { DisplayDataType } from '@/types/firebase';
+import { Bound } from '@/types/general';
+import { formatRTDBData } from '@/utils/general';
 import {
-  getMetricType,
-  MetricBody,
-  normalizeData,
-  NormalizedMetricNode,
-} from '@/utils/normalize';
-import { select } from 'd3';
-import { createContext, FC, useContext, useEffect, useRef } from 'react';
+  createContext,
+  Dispatch,
+  FC,
+  SetStateAction,
+  useContext,
+  useState,
+} from 'react';
 import { useConfig } from './config-context';
+
+// Define a mapped type based on the keys of DisplayDataType
+export type FormattedDataMapping<T extends keyof FormtattedDataBaseType> =
+  FormtattedDataBaseType[T];
+
+export type DisplayDataMapping<T extends keyof DisplayDataType> =
+  DisplayDataType[T];
+
 export interface DisplayContextType<T> {
-  displayData: NormalizedMetricNode<T>[];
-  svgRef: React.RefObject<SVGSVGElement> | null;
+  displayData: T | null;
+  freeSpaceArea: Bound[];
+  setFreeSpaceArea: Dispatch<SetStateAction<Bound[]>>;
 }
 
 export const DisplayContext = createContext<
-  DisplayContextType<unknown> | undefined
+  DisplayContextType<any> | undefined
 >(undefined);
 
 export const DisplayProvider: FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const svgRef = useRef<SVGSVGElement | null>(null);
-
   const { displayType } = useConfig();
+  const [freeSpaceArea, setFreeSpaceArea] = useState<Bound[]>([]);
 
-  const { data } = useRTDB<MetricBody>({
-    path: `/data/` + displayType,
+  const { data: displayData } = useRTDB<
+    FormattedDataMapping<typeof displayType>
+  >({
+    path: `/data/${displayType}`,
   });
 
-  const metricType = getMetricType(displayType as keyof MetricTypes);
-  const displayData = normalizeData<typeof metricType>(data);
+  // Format data based on displayType
+  const formattedData = formatRTDBData<
+    FormattedDataMapping<typeof displayType>
+  >(displayData, displayType);
 
-  useEffect(() => {
-    const svg = select(svgRef.current)
-      .attr('width', '100%')
-      .attr('height', '100%');
-
-    return () => {
-      svg.selectAll('*').remove();
-    };
-  }, []);
-
-  const contextValue: DisplayContextType<typeof metricType> = {
-    displayData,
-    svgRef,
+  const contextValue: DisplayContextType<
+    FormattedDataMapping<typeof displayType>
+  > = {
+    displayData: formattedData,
+    freeSpaceArea,
+    setFreeSpaceArea,
   };
 
   return (
@@ -55,8 +63,10 @@ export const DisplayProvider: FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useDisplay = <T,>() => {
-  const ctx = useContext(DisplayContext) as DisplayContextType<T>;
+export const useDisplay = <T extends keyof FormtattedDataBaseType>() => {
+  const ctx = useContext(DisplayContext) as DisplayContextType<
+    FormattedDataMapping<T>
+  >;
 
   if (!ctx) {
     throw new Error('useDisplay must be used within a DisplayProvider');
