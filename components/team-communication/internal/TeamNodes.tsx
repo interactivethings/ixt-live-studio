@@ -106,6 +106,7 @@ const TeamNodes: FC<ITeamNodeProps> = ({
         return (
           <g key={`node-tooltip-${node.id}-${i}`}>
             <motion.g
+              initial={{ opacity: 0, visibility: 'hidden' }}
               animate={{
                 opacity: hover === node.id ? 1 : 0,
                 visibility: hover === node.id ? 'visible' : 'hidden',
@@ -209,8 +210,7 @@ const TeamNodes: FC<ITeamNodeProps> = ({
                           fontSize: adjustToMedia(media, [96, 104, 112]),
                           fontFamily: 'Apple Color Emoji',
                         }) / 2,
-                      offsetY:
-                        adjustToMedia(media, [96, 104, 112]) + node.radius,
+                      offsetY: node.radius,
                     })
                   : { y: node.y, x: node.x }),
                 fontSize: reactionChange

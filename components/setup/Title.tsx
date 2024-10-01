@@ -22,7 +22,8 @@ const Title = () => {
   const { title, description } = displayData;
 
   const titleWidth = getTextWidth(title, {
-    fontSize: titleStyles.title.fontSize + 2,
+    fontSize: titleStyles.title.fontSize + 4,
+    fontFamily: titleStyles.title.fontFamily,
   });
   const descriptionWidth = getTextWidth(description, {
     fontSize: titleStyles.description.fontSize,
@@ -72,12 +73,14 @@ export const useTitleStyle = (query: MediaQueries) => {
     title: {
       fontSize: adjustToMedia(query, [24, 32, 40]),
       fontWeight: 'bold',
+      fontFamily: 'Arial',
       color: '#fff',
       filter: 'url(#text-glow-slight)',
     },
     description: {
       fontSize: adjustToMedia(query, [12, 16, 16]),
       fontWeight: 'medium',
+      fontFamily: 'Arial',
       color: '#888',
     },
   };
