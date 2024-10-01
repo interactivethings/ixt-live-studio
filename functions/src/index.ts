@@ -71,6 +71,8 @@ exports.clearRealtimeDatabase = functions.pubsub
       const ref = rtdb.ref(pathToClear);
       await ref.remove();
 
+      await initializeRealtimeDatabase();
+
       console.log(`Successfully cleared the path: ${pathToClear}`);
       return null;
     } catch (error) {
@@ -105,4 +107,17 @@ const takeScreenshotAndUpload = async (bucket: Bucket) => {
   await browser.close();
 
   return screenshotFileName;
+};
+
+const initializeRealtimeDatabase = async () => {
+  const ref = await firestore.collection("metrics").get();
+  const metrics = ref.docs.map((doc) => doc.data());
+  const dataRef = rtdb.ref("/data");
+  metrics.forEach((metric) => {
+    dataRef.child(metric.id).set({
+      title: metric.title,
+      description: metric.description,
+      sensors: {},
+    });
+  });
 };

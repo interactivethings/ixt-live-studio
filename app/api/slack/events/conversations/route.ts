@@ -34,19 +34,24 @@ export const POST = async (req: NextRequest) => {
     if (type === 'event_callback' && event?.type === 'reaction_added') {
       validateReactionSlackEvent(event);
       await updateSlackReaction(event);
+      return new Response(
+        JSON.stringify({
+          success: true,
+        }),
+        { status: 200 }
+      );
     }
 
     if (type === 'event_callback' && event?.type === 'message') {
       validateMessageSlackEvent(event);
       await updateSlackMessage(event);
+      return new Response(
+        JSON.stringify({
+          success: true,
+        }),
+        { status: 200 }
+      );
     }
-
-    return new Response(
-      JSON.stringify({
-        success: true,
-      }),
-      { status: 200 }
-    );
   } catch (error) {
     if (error instanceof Error) {
       console.log(error.message);

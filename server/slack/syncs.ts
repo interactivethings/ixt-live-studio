@@ -42,7 +42,7 @@ export const validateReactionSlackEvent = (event: ReactionAddedEvent) => {
 export const updateSlackReaction = async (event: ReactionAddedEvent) => {
   const db = admin.database();
   const userRef = db.ref(
-    `data/team-communication/sensor-1/value/${event.user}`
+    `data/team-communication/sensors/slack/value/${event.user}`
   );
 
   const snapshot = await userRef.once('value');
