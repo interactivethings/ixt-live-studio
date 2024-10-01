@@ -210,7 +210,7 @@ const TeamNodes: FC<ITeamNodeProps> = ({
                           fontFamily: 'Apple Color Emoji',
                         }) / 2,
                       offsetY:
-                        adjustToMedia(media, [96, 104, 112]) + node.radius,
+                        node.radius,
                     })
                   : { y: node.y, x: node.x }),
                 fontSize: reactionChange
