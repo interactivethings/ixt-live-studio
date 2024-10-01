@@ -40,7 +40,9 @@ export const DisplayProvider: FC<{ children: React.ReactNode }> = ({
   const { data: displayData } = useRTDB<
     FormattedDataMapping<typeof displayType>
   >({
-    path: `/data/${displayType}`,
+    path: `/${
+      process.env.NODE_ENV === 'development' ? 'test' : 'data'
+    }/${displayType}`,
   });
 
   // Format data based on displayType
