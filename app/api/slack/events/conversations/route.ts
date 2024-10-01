@@ -38,6 +38,9 @@ export const POST = async (req: NextRequest) => {
     );
   } catch (error) {
     if (error instanceof Error) {
+
+      console.log(error.message)
+
       return new Response(JSON.stringify({ success: false, error }), {
         status: 400,
       });
