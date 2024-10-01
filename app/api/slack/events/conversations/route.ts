@@ -1,21 +1,32 @@
+import { initializeFirebase } from '@/server/firebase/server';
+import { verifySlackRequest } from '@/server/security';
 import {
   updateSlackMessage,
   updateSlackReaction,
   validateMessageSlackEvent,
   validateReactionSlackEvent,
 } from '@/server/slack/syncs';
-import { initializeFirebase } from '@/server/firebase/server';
-import { validateWebhookEntry } from '@/server/security';
-import { NextRequest } from 'next/server';
+import { createError } from '@/utils/error-handling';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const POST = async (req: NextRequest) => {
   try {
-    await validateWebhookEntry(req);
-
     const rawBody = await req.text();
 
+    if (!verifySlackRequest(rawBody, req)) {
+      throw createError({
+        title: 'Invalid Slack signature',
+        message: 'The request signature is invalid',
+      });
+    }
+
     const body = JSON.parse(rawBody);
-    const { type, event } = body;
+    const { type, challenge, event } = body;
+
+    // URL verification for Slack API
+    if (type === 'url_verification') {
+      return NextResponse.json({ challenge });
+    }
 
     initializeFirebase();
 
@@ -38,8 +49,7 @@ export const POST = async (req: NextRequest) => {
     );
   } catch (error) {
     if (error instanceof Error) {
-
-      console.log(error.message)
+      console.log(error.message);
 
       return new Response(JSON.stringify({ success: false, error }), {
         status: 400,
