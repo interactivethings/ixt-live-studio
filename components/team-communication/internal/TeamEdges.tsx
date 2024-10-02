@@ -110,9 +110,9 @@ const TeamEdges: FC<ITeamEdgesProps> = ({
                 animate={{
                   pathLength: resetPath ? 0 : 1, // Reset to 0 if resetPath is true, then back to 1
                   strokeWidth: resetPath ? 5 : 1,
-                  opacity: hover !== '' && hover !== sourceNode.id ? 0.2 : 1,
+                  opacity: hover !== '' && hover !== sourceNode.id ? 0.1 : 1,
                   stroke:
-                    hover === targetNode.id
+                    hover === sourceNode.id
                       ? 'white'
                       : `url(#source-${sourceNode.id}-${
                           sourceNode.color.split('#')[1]
@@ -171,7 +171,7 @@ const TeamEdges: FC<ITeamEdgesProps> = ({
                 animate={{
                   pathLength: resetPath ? 0 : 1, // Reset to 0 if resetPath is true, then back to 1
                   strokeWidth: resetPath ? 5 : 1,
-                  opacity: hover !== '' && hover !== targetNode.id ? 0.2 : 1,
+                  opacity: hover !== '' && hover !== targetNode.id ? 0.1 : 1,
                   stroke:
                     hover === targetNode.id
                       ? 'white'
