@@ -13,6 +13,7 @@ export const validateMessageSlackEvent = (event: MessageEvent) => {
     typeof event.channel !== 'string' ||
     typeof event.text !== 'string'
   ) {
+    console.log(event);
     throw createError({
       title: 'Invalid Slack event',
       message: 'Event user or channel is invalid',
@@ -31,6 +32,7 @@ export const validateReactionSlackEvent = (event: ReactionAddedEvent) => {
     typeof event.reaction !== 'string' ||
     typeof event.item.channel !== 'string'
   ) {
+    console.log(event);
     throw createError({
       title: 'Invalid Slack event',
       message: 'Event user, reaction, or channel is invalid',
