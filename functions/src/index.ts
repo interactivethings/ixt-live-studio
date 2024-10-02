@@ -1,8 +1,12 @@
+import {Bucket} from "@google-cloud/storage";
 import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import * as puppeteer from "puppeteer";
-import * as path from "path";
-import {Bucket} from "@google-cloud/storage";
+import {
+  RTDBData,
+  TeamCommunicationData,
+  TeamCommunicationEntry,
+} from "./types/firebase-types";
 
 admin.initializeApp();
 
@@ -69,6 +73,15 @@ exports.clearRealtimeDatabase = functions.pubsub
       console.log(`Screenshot saved at: ${screenshotFilePath}`);
 
       const ref = rtdb.ref(pathToClear);
+      const data = await ref.once("value");
+      const dataValue = data.val();
+      const preparedTeamCommunicationsData =
+      prepareTeamCommunicationSync(dataValue);
+      preparedTeamCommunicationsData.forEach(async (entry) => {
+        await syncTeamMembersData(entry, "team-communication");
+      });
+
+
       await ref.remove();
 
       await initializeRealtimeDatabase();
@@ -120,4 +133,68 @@ const initializeRealtimeDatabase = async () => {
       sensors: {},
     });
   });
+};
+
+const prepareTeamCommunicationSync =
+(data: RTDBData<TeamCommunicationData>) => {
+  const preparedData: TeamCommunicationEntry[] = [];
+
+  const dataSource = data["team-communication"];
+  for (const sensorKey in dataSource.sensors) {
+    if (Object.prototype.hasOwnProperty
+      .call(dataSource.sensors, sensorKey)) {
+      const sensorData = dataSource.sensors[sensorKey].value;
+      for (const key in sensorData) {
+        if (Object.prototype.hasOwnProperty
+          .call(sensorData, key)) {
+          const incomingMember = sensorData[key];
+
+          // Check if the member with the same id already exists
+          const existingMemberIndex =
+          preparedData.findIndex((member) => member.id === incomingMember.id);
+
+          if (existingMemberIndex !== -1) {
+            const existingMember = preparedData[existingMemberIndex];
+
+            preparedData[existingMemberIndex] = {
+              id: incomingMember.id,
+              timestamp: Date.now(),
+              connections:
+              (Object.keys(existingMember.connections).length || 0) +
+              (Object.keys(incomingMember.connections).length || 0),
+              characters: (existingMember.characters || 0) +
+              (incomingMember.characters || 0),
+              messages: (existingMember.messages || 0)+
+              (incomingMember.messages || 0),
+              reactions: (existingMember.reactions || 0)+
+              (incomingMember.reactions || 0),
+            };
+          } else {
+            preparedData.push({
+              id: incomingMember.id,
+              timestamp: Date.now(),
+              connections: Object.keys(incomingMember.connections).length || 0,
+              characters: incomingMember.characters || 0,
+              messages: incomingMember.messages || 0,
+              reactions: incomingMember.reactions || 0,
+            });
+          }
+        }
+      }
+    }
+  }
+
+  return preparedData;
+};
+
+const syncTeamMembersData = async (
+  entry: TeamCommunicationEntry,
+  stat: string,
+) => {
+  const userRef = firestore
+    .collection("users")
+    .doc(entry.id)
+    .collection(`${stat}-stats`)
+    .doc(`stat-${entry.id}`);
+  await userRef.set(entry);
 };
