@@ -1,0 +1,19 @@
+{
+    "team-noise-levels": {
+        "title": "Team Noise Levels",
+        "description": "This is a mock data for team noise levels",
+        "sensors": {
+            "meeting-room-nw": {
+                "title": "Meeting Room NW",
+                "description": "This is a mock data for meeting room NW",
+                "value": 50
+            },
+            "meeting-room-ne": {
+                "title": "Meeting Room NE",
+                "description": "This is a mock data for meeting room NE",
+                "value": 30
+            }
+           
+        }
+    }
+}

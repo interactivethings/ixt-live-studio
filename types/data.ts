@@ -1,4 +1,5 @@
-import { NoiseLevelsData, TeamMember } from './firebase';
+import { NoiseLevelsData } from './firebase';
+import { TeamMember } from './team-activity';
 
 export interface FormtattedDataBaseType {
   'team-communication': FormattedDataBase<TeamMember[]>;

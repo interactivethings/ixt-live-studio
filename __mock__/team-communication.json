@@ -3,8 +3,7 @@
     "title": "Team Communication",
     "description": "This visualization showcases the conversations between team members.",
     "sensors": {
-      "sensor-1": {
-        "title": "Slack",
+      "slack": {
         "value": {
           "U01HR3WBQH4": {
             "characters": 1868,

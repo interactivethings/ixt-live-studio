@@ -3,7 +3,7 @@ import { useConfig } from '@/contexts/config-context';
 import { useDisplay } from '@/contexts/display-context';
 import { useMedia } from '@/hooks/use-media';
 import { useWindowDimensions } from '@/hooks/use-window-dimensions';
-import { TeamMember } from '@/types/firebase';
+import { TeamMember } from '@/types/team-activity';
 import {
   calculatePreferredWhiteSpace,
   calulcateAvailableSpace,
@@ -11,7 +11,7 @@ import {
   relativeTeamCommunicationMemberSize,
   viewTeamPositions,
 } from '@/utils/general';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import TeamDefs from './internal/TeamDefs';
 import TeamEdges from './internal/TeamEdges';
 import TeamNodes from './internal/TeamNodes';
@@ -30,7 +30,7 @@ export interface Edge {
 }
 
 const TeamCommunication = () => {
-  //Contexts
+  // Contexts
   const { displayData, freeSpaceArea } = useDisplay<'team-communication'>();
   const { view } = useChart();
   const { metricConfigs } = useConfig();
@@ -54,15 +54,14 @@ const TeamCommunication = () => {
 
   const delayBetweenInstance = 0.2;
 
-  //Only Support Slack
   const slackData = displayData?.sensors[0].value;
-  const oldSlackDataRef = useRef(slackData);
 
   // Edges & Nodes
   const [edges, setEdges] = useState<Edge[]>([]);
   const [nodes, setNodes] = useState<Node[]>([]);
+  const [positions, setPositions] = useState<Node[]>([]);
 
-  //Custom Branding
+  // Custom Branding
   const [turnOffBranding, setTurnOffBranding] = useState(false);
 
   useEffect(() => {
@@ -76,9 +75,9 @@ const TeamCommunication = () => {
     }
   }, [view]);
 
+  // First useEffect: Update positions only when view changes or on initial render
   useEffect(() => {
     if (slackData) {
-      // First, calculate the radius for each node based on messages
       const totalMessages = slackData.reduce(
         (acc, value) => acc + value.messages,
         0
@@ -94,13 +93,13 @@ const TeamCommunication = () => {
 
         return {
           ...value,
-          radius, // Add radius first
+          radius,
         };
       });
 
       const positionPreparedData = viewTeamPositions({
         view,
-        members: updatedNodes, // Pass nodes with radius
+        members: updatedNodes,
         spaces: {
           width,
           height,
@@ -110,13 +109,43 @@ const TeamCommunication = () => {
         options: { offBranding: turnOffBranding },
       });
 
-      // Update the nodes with the new positions
-      setNodes(positionPreparedData);
-
-      oldSlackDataRef.current = slackData;
+      setPositions(positionPreparedData);
     }
-  }, [slackData, view, width, height, freeSpaceArea, query]);
+  }, [view, width, height, freeSpaceArea, query, turnOffBranding]);
 
+  // Second useEffect: Update other node properties when data changes
+  useEffect(() => {
+    if (positions.length > 0 && slackData) {
+      const totalMessages = slackData.reduce(
+        (acc, value) => acc + value.messages,
+        0
+      );
+
+      const updatedNodes = positions.map((node) => {
+        const matchingValue = slackData.find((value) => value.id === node.id);
+        if (matchingValue) {
+          const radius = relativeTeamCommunicationMemberSize(
+            matchingValue.messages,
+            availableSpace,
+            totalMessages,
+            defaultMemberSize
+          );
+
+          return {
+            ...node,
+            ...matchingValue,
+            radius,
+          };
+        } else {
+          return node;
+        }
+      });
+
+      setNodes(updatedNodes);
+    }
+  }, [slackData, positions, availableSpace, defaultMemberSize]);
+
+  // Update edges when nodes change
   useEffect(() => {
     const newEdges: Edge[] = [];
     nodes.forEach((node, i) => {
@@ -128,7 +157,7 @@ const TeamCommunication = () => {
           const matchingKey = nodeKeys.filter((key) =>
             targetKeys.includes(key)
           );
-          if (matchingKey) {
+          if (matchingKey.length > 0) {
             newEdges.push({
               source: node,
               target: targetNode,
@@ -150,7 +179,7 @@ const TeamCommunication = () => {
         nodes={nodes}
       />
       <TeamNodes
-        previousNodes={oldSlackDataRef.current}
+        previousNodes={nodes}
         delayBetweenInstance={delayBetweenInstance}
         nodes={nodes}
       />
