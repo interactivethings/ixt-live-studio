@@ -1,5 +1,7 @@
-export type ConfigType = 'ANALOG' | 'DIGITAL';
+import { TeamCommunicationData } from './team-activity';
 
+//General Modular Types across all visualizations
+export type ConfigType = 'ANALOG' | 'DIGITAL';
 export type DisplayType = keyof DisplayDataType;
 
 export interface Metric<T extends keyof Views> {
@@ -53,26 +55,4 @@ export interface DisplayDataBase<T> {
 //noise-levels
 export interface NoiseLevelsData {
   db: number;
-}
-
-//team-communication
-export interface TeamCommunicationData {
-  [key: string]: TeamMember;
-}
-
-export interface TeamMember {
-  id: string;
-  characters: number;
-  messages: number;
-  name: string;
-  color: string;
-  lastMessage: number;
-  lastReaction: string;
-  reactions: number;
-  connections: {
-    [key: string]: {
-      messages: number;
-      characters: number;
-    };
-  };
 }
