@@ -4,8 +4,9 @@ import {
   DisplayDataMapping,
   FormattedDataMapping,
 } from '@/contexts/display-context';
-import { DisplayType, TeamMember, Views } from '@/types/firebase';
+import { DisplayType, Views } from '@/types/firebase';
 import { Bound, MediaQueries } from '@/types/general';
+import { TeamMember } from '@/types/team-activity';
 import { adjustToMedia } from './styles';
 
 export const formatRTDBData = <T extends FormattedDataMapping<any>>(
@@ -115,73 +116,115 @@ export const viewTeamPositions = ({
       const centerX = spaces.width / 2;
       const centerY = spaces.height / 2;
       const space = Math.min(spaces.width, spaces.height);
-      const margin = adjustToMedia(query, [200, 300, 400]);
-      const step = (space - margin) / (members.length / 2); // Base step size
+      const margin = adjustToMedia(query, [50, 100, 200]);
 
-      return members.map((member, i) => {
-        const diagonal = i < members.length / 2 ? 'positive' : 'negative';
+      const diagLength = space - margin * 2;
 
-        if (diagonal === 'positive') {
-          // Positive diagonal (\)
-          return {
-            ...member,
-            color: options?.offBranding ? member.color : '#003B5C',
+      const outerOffset = 50; // Space between end and last point
 
-            x: centerX - (members.length / 4) * step + i * step,
-            y: centerY - (members.length / 4) * step + i * step,
-          };
+      const half = Math.ceil(members.length / 2);
+      const positiveDiagonalMembers = members.slice(0, half);
+      const negativeDiagonalMembers = members.slice(half);
+
+      const positions: Node[] = [];
+
+      /*** Positive Diagonal (\) - Full length, Blue ***/
+      const x0_pos = centerX - diagLength / 2 + outerOffset;
+      const y0_pos = centerY - diagLength / 2 + outerOffset;
+      const x1_pos = centerX + diagLength / 2 - outerOffset;
+      const y1_pos = centerY + diagLength / 2 - outerOffset;
+
+      const n_pos = positiveDiagonalMembers.length;
+
+      for (let i = 0; i < n_pos; i++) {
+        const member = positiveDiagonalMembers[i];
+
+        let x, y;
+
+        if (n_pos === 1) {
+          x = (x0_pos + x1_pos) / 2;
+          y = (y0_pos + y1_pos) / 2;
         } else {
-          // Negative diagonal (/)
-          const index = i - members.length / 2;
-          const totalNegativePoints = members.length / 2;
-          const threshold = Math.floor(totalNegativePoints * 0.4); // 40% of the negative diagonal
-
-          if (index === threshold) {
-            // If the point is exactly at the 40% mark, increase the space
-            const largerStep = step * 2; // Increase step size at 40%
-            return {
-              ...member,
-              color: options?.offBranding ? member.color : '#003B5C',
-              x:
-                centerX +
-                (members.length / 4) * step -
-                (index * step + largerStep), // Larger space at 40%
-              y:
-                centerY -
-                (members.length / 4) * step +
-                (index * step + largerStep), // Larger space at 40%
-            };
-          } else if (index > threshold) {
-            // For the points after 40%, adjust the spacing to account for the larger step at the 40% mark
-            const remainingPoints = totalNegativePoints - threshold;
-            const adjustedStep = (space - margin - step * 4) / remainingPoints; // Adjusted step after 40%
-
-            const adjustedIndex = index - threshold; // Adjust index after 40%
-            return {
-              ...member,
-              color: options?.offBranding ? member.color : '#003B5C',
-              x:
-                centerX +
-                (members.length / 4) * step -
-                threshold * step -
-                adjustedIndex * adjustedStep, // Adjusted position
-              y:
-                centerY -
-                (members.length / 4) * step +
-                threshold * step +
-                adjustedIndex * adjustedStep, // Adjusted position
-            };
-          } else {
-            // Regular step for points before 40%
-            return {
-              ...member,
-              color: options?.offBranding ? member.color : '#FF5555',
-              x: centerX + (members.length / 4) * step - index * step, // Regular step before 40%
-              y: centerY - (members.length / 4) * step + index * step, // Regular step before 40%
-            };
-          }
+          const t = i / (n_pos - 1);
+          x = x0_pos + t * (x1_pos - x0_pos);
+          y = y0_pos + t * (y1_pos - y0_pos);
         }
-      });
+
+        positions.push({
+          ...member,
+          x: x,
+          y: y,
+          color: options?.offBranding ? member.color : '#003B5C', // Blue color
+        } as Node);
+      }
+
+      /*** Negative Diagonal (/) - Split into Upper (Red) and Lower (Blue) segments ***/
+      const n_neg = negativeDiagonalMembers.length;
+      const n_upper = Math.ceil(n_neg * 0.4); // Approx. 40% of members for the upper segment
+      const n_lower = n_neg - n_upper;
+
+      const upperSegmentMembers = negativeDiagonalMembers.slice(0, n_upper);
+      const lowerSegmentMembers = negativeDiagonalMembers.slice(n_upper);
+
+      // Upper Segment (Red) - From top right, half-length towards center
+      const x0_neg_upper = centerX + diagLength / 2 - outerOffset;
+      const y0_neg_upper = centerY - diagLength / 2 + outerOffset;
+      const x_center = centerX;
+      const y_center = centerY;
+      const x1_neg_upper = x0_neg_upper + (x_center - x0_neg_upper) * 0.5;
+      const y1_neg_upper = y0_neg_upper + (y_center - y0_neg_upper) * 0.5;
+
+      for (let i = 0; i < n_upper; i++) {
+        const member = upperSegmentMembers[i];
+
+        let x, y;
+
+        if (n_upper === 1) {
+          x = (x0_neg_upper + x1_neg_upper) / 2;
+          y = (y0_neg_upper + y1_neg_upper) / 2;
+        } else {
+          const t = i / (n_upper - 1);
+          x = x0_neg_upper + t * (x1_neg_upper - x0_neg_upper);
+          y = y0_neg_upper + t * (y1_neg_upper - y0_neg_upper);
+        }
+
+        positions.push({
+          ...member,
+          x: x,
+          y: y,
+          color: options?.offBranding ? member.color : '#FF5555', // Red color
+        } as Node);
+      }
+
+      // Lower Segment (Blue) - From bottom left up to the center
+      const x0_neg_lower = centerX - diagLength / 2 + outerOffset;
+      const y0_neg_lower = centerY + diagLength / 2 - outerOffset;
+      const x1_neg_lower = centerX;
+      const y1_neg_lower = centerY;
+
+      for (let i = 0; i < n_lower; i++) {
+        const member = lowerSegmentMembers[i];
+
+        let x, y;
+
+        if (n_lower === 1) {
+          x = (x0_neg_lower + x1_neg_lower) / 2;
+          y = (y0_neg_lower + y1_neg_lower) / 2;
+        } else {
+          const t = i / (n_lower - 1);
+          x = x0_neg_lower + t * (x1_neg_lower - x0_neg_lower);
+          y = y0_neg_lower + t * (y1_neg_lower - y0_neg_lower);
+        }
+
+        positions.push({
+          ...member,
+          x: x,
+          y: y,
+          color: options?.offBranding ? member.color : '#003B5C', // Blue color
+        } as Node);
+      }
+
+      return positions;
     },
   };
 
@@ -194,28 +237,136 @@ export interface Spaces {
   freeSpaceArea: Bound[];
 }
 
+function circleRectOverlap(node: Node, rect: Bound): boolean {
+  // Find the closest point to the circle within the rectangle
+  const closestX = clamp(node.x, rect.x, rect.x + rect.width);
+  const closestY = clamp(node.y, rect.y, rect.y + rect.height);
+
+  // Calculate the distance between the circle's center and this closest point
+  const dx = node.x - closestX;
+  const dy = node.y - closestY;
+
+  // If the distance is less than the circle's radius, an intersection occurs
+  const distanceSquared = dx * dx + dy * dy;
+
+  return distanceSquared < node.radius * node.radius;
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
+
+// Implementing resolveFreeSpaceCollisions
+export const resolveFreeSpaceCollisions = (
+  nodes: Node[],
+  spaces: Spaces
+): Node[] => {
+  const adjustedNodes = nodes.map((node) => {
+    const adjustedNode = { ...node };
+    let overlapFound = true;
+    const maxIterations = 10;
+    let iterations = 0;
+
+    while (overlapFound && iterations < maxIterations) {
+      overlapFound = false;
+
+      for (const bound of spaces.freeSpaceArea) {
+        if (circleRectOverlap(adjustedNode, bound)) {
+          // Adjust node position
+          // Move node away from the rectangle
+          const dx = adjustedNode.x - (bound.x + bound.width / 2);
+          const dy = adjustedNode.y - (bound.y + bound.height / 2);
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          const moveDistance = adjustedNode.radius;
+
+          if (distance > 0) {
+            adjustedNode.x += (dx / distance) * moveDistance;
+            adjustedNode.y += (dy / distance) * moveDistance;
+          } else {
+            // Randomly move the node
+            adjustedNode.x += Math.random() * moveDistance * 2 - moveDistance;
+            adjustedNode.y += Math.random() * moveDistance * 2 - moveDistance;
+          }
+
+          overlapFound = true;
+          break; // Recheck all bounds after adjusting
+        }
+      }
+
+      iterations++;
+    }
+
+    return adjustedNode;
+  });
+
+  return adjustedNodes;
+};
+
+// Implementing resolveNodeCollisions
+export const resolveNodeCollisions = (nodes: Node[]): Node[] => {
+  const adjustedNodes = nodes.map((node) => ({ ...node }));
+
+  const maxIterations = 10;
+  for (let iteration = 0; iteration < maxIterations; iteration++) {
+    let collisionFound = false;
+
+    for (let i = 0; i < adjustedNodes.length; i++) {
+      for (let j = i + 1; j < adjustedNodes.length; j++) {
+        const nodeA = adjustedNodes[i];
+        const nodeB = adjustedNodes[j];
+
+        const dx = nodeB.x - nodeA.x;
+        const dy = nodeB.y - nodeA.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const minDistance = nodeA.radius + nodeB.radius;
+
+        if (distance < minDistance) {
+          // Nodes are overlapping
+          collisionFound = true;
+
+          // Calculate overlap amount
+          const overlap = (minDistance - distance) / 2;
+
+          // Normalize the vector between nodes
+          const nx = dx / distance;
+          const ny = dy / distance;
+
+          // Displace nodes away from each other
+          nodeA.x -= nx * overlap;
+          nodeA.y -= ny * overlap;
+          nodeB.x += nx * overlap;
+          nodeB.y += ny * overlap;
+        }
+      }
+    }
+
+    if (!collisionFound) {
+      break;
+    }
+  }
+
+  return adjustedNodes;
+};
+
+// Updating resolveCollisions to include the new functions
 export const resolveCollisions = (
   spaces: Spaces,
   nodes: Node[],
   query: MediaQueries
 ): Node[] => {
-  // Step 1 - Check for viewport collisions and return the updated nodes
+  // Step 1 - Check for viewport collisions
   const viewPortResolvedNodes = resolveViewportCollisions(spaces, query, nodes);
 
-  // Step 2 - Check for free space collisions and return the updated nodes
-  // const freeSpaceResolvedNodes = resolveFreeSpaceCollisions(
-  //   viewPortResolvedNodes,
-  //   spaces,
-  //   query
-  // );
+  // Step 2 - Check for free space collisions
+  const freeSpaceResolvedNodes = resolveFreeSpaceCollisions(
+    viewPortResolvedNodes,
+    spaces
+  );
 
-  // // Step 3 - Check for node collisions between each node
-  // const finalResolvedNodes = resolveNodeCollisions(
-  //   freeSpaceResolvedNodes,
-  //   query
-  // );
+  // Step 3 - Check for node collisions between each node
+  const finalResolvedNodes = resolveNodeCollisions(freeSpaceResolvedNodes);
 
-  return viewPortResolvedNodes;
+  return finalResolvedNodes;
 };
 
 export const resolveViewportCollisions = (
@@ -253,210 +404,6 @@ export const resolveViewportCollisions = (
 
   return resolvedNodes;
 };
-
-// export const resolveFreeSpaceCollisions = (
-//   nodes: Node[],
-//   spaces: Spaces,
-//   query: MediaQueries
-// ): Node[] => {
-//   const radiusPadding = adjustToMedia(query, RADIUS_PADDING);
-
-//   const resolvedNodes = nodes.map((node) => {
-//     const intersections: { x: number; y: number }[] = [];
-//     // Cast rays in 4 directions (left, right, up, down)
-//     const rays = [
-//       { dx: -1, dy: 0 }, // Left
-//       { dx: 1, dy: 0 }, // Right
-//       { dx: 0, dy: -1 }, // Up
-//       { dx: 0, dy: 1 }, // Down
-//     ];
-
-//     rays.forEach((ray) => {
-//       const rayEnd = castRay(node, ray, spaces);
-//       if (rayEnd) intersections.push(rayEnd);
-//     });
-
-//     if (intersections.length === 0) return node;
-
-//     const chosenIntersection =
-//       intersections[Math.floor(Math.random() * intersections.length)];
-
-//     const adjustedNode = {
-//       ...node,
-//       x: chosenIntersection.x + node.radius + radiusPadding,
-//       y: chosenIntersection.y + node.radius + radiusPadding,
-//     };
-
-//     return adjustedNode;
-//   });
-
-//   return resolvedNodes;
-// };
-
-// const isInside = (
-//   edges: [number[], number[]][],
-//   xp: number,
-//   yp: number
-// ): boolean => {
-//   let cnt = 0;
-
-//   edges.forEach((edge) => {
-//     const [[x1, y1], [x2, y2]] = edge;
-
-//     if (yp < y1 !== yp < y2 && xp < x1 + ((yp - y1) / (y2 - y1)) * (x2 - x1)) {
-//       cnt++;
-//     }
-//   });
-
-//   return cnt % 2 === 1;
-// };
-
-// const castRay = (
-//   node: Node,
-//   ray: Ray,
-//   spaces: Spaces
-// ): { x: number; y: number } | null => {
-//   let rayX = node.x;
-//   let rayY = node.y;
-
-//   const getEdgesFromRect = (rect: Bound): [number[], number[]][] => [
-//     [
-//       [rect.left, rect.top],
-//       [rect.right, rect.top],
-//     ], // Top edge
-//     [
-//       [rect.right, rect.top],
-//       [rect.right, rect.bottom],
-//     ], // Right edge
-//     [
-//       [rect.right, rect.bottom],
-//       [rect.left, rect.bottom],
-//     ], // Bottom edge
-//     [
-//       [rect.left, rect.bottom],
-//       [rect.left, rect.top],
-//     ], // Left edge
-//   ];
-
-//   while (true) {
-//     rayX += ray.dx;
-//     rayY += ray.dy;
-
-//     for (const rect of spaces.freeSpaceArea) {
-//       const edges = getEdgesFromRect(rect);
-//       if (isInside(edges, rayX, rayY)) {
-//         return { x: rayX, y: rayY };
-//       }
-//     }
-
-//     if (rayX < 0 || rayY < 0 || rayX > spaces.width || rayY > spaces.height) {
-//       break;
-//     }
-//   }
-
-//   return null;
-// };
-
-// export const resolveNodeCollisions = (
-//   nodes: Node[],
-//   query: MediaQueries
-// ): Node[] => {
-//   const radiusPadding = adjustToMedia(query, RADIUS_PADDING);
-//   const resolvedNodes = [...nodes];
-
-//   for (let i = 0; i < resolvedNodes.length; i++) {
-//     for (let j = i + 1; j < resolvedNodes.length; j++) {
-//       const node1 = resolvedNodes[i];
-//       const node2 = resolvedNodes[j];
-
-//       const dx = node2.x - node1.x;
-//       const dy = node2.y - node1.y;
-//       const distance = Math.sqrt(dx * dx + dy * dy);
-
-//       const minDistance = node1.radius + node2.radius + 2 * radiusPadding;
-
-//       if (distance < minDistance) {
-//         const rays = [
-//           { dx: -1, dy: 0 }, // Left
-//           { dx: 1, dy: 0 }, // Right
-//           { dx: 0, dy: -1 }, // Up
-//           { dx: 0, dy: 1 }, // Down
-//         ];
-
-//         const intersections1 = castRaysForCollisions(node1, rays, nodes);
-//         const intersections2 = castRaysForCollisions(node2, rays, nodes);
-
-//         if (intersections1.length > 0) {
-//           const chosenIntersection1 =
-//             intersections1[Math.floor(Math.random() * intersections1.length)];
-//           resolvedNodes[i] = {
-//             ...node1,
-//             x: chosenIntersection1.x + node1.radius + radiusPadding,
-//             y: chosenIntersection1.y + node1.radius + radiusPadding,
-//           };
-//         }
-
-//         if (intersections2.length > 0) {
-//           const chosenIntersection2 =
-//             intersections2[Math.floor(Math.random() * intersections2.length)];
-//           resolvedNodes[j] = {
-//             ...node2,
-//             x: chosenIntersection2.x + node2.radius + radiusPadding,
-//             y: chosenIntersection2.y + node2.radius + radiusPadding,
-//           };
-//         }
-//       }
-//     }
-//   }
-
-//   return resolvedNodes;
-// };
-// const castRaysForCollisions = (
-//   node: Node,
-//   rays: { dx: number; dy: number }[],
-//   nodes: Node[]
-// ): { x: number; y: number }[] => {
-//   const intersections: { x: number; y: number }[] = [];
-
-//   rays.forEach((ray) => {
-//     let rayX = node.x;
-//     let rayY = node.y;
-
-//     while (true) {
-//       rayX += ray.dx;
-//       rayY += ray.dy;
-
-//       let collisionFound = false;
-
-//       for (const otherNode of nodes) {
-//         if (otherNode !== node) {
-//           const dx = otherNode.x - rayX;
-//           const dy = otherNode.y - rayY;
-//           const distance = Math.sqrt(dx * dx + dy * dy);
-
-//           if (distance < otherNode.radius) {
-//             intersections.push({ x: rayX, y: rayY });
-//             collisionFound = true;
-//             break;
-//           }
-//         }
-//       }
-
-//       if (collisionFound) break;
-
-//       if (
-//         rayX < 0 ||
-//         rayY < 0 ||
-//         rayX > window.innerWidth ||
-//         rayY > window.innerHeight
-//       ) {
-//         break;
-//       }
-//     }
-//   });
-
-//   return intersections;
-// };
 
 export const calculatePreferredWhiteSpace = (
   width: number,
