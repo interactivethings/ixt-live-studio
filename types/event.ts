@@ -42,6 +42,10 @@ export interface ReactionAddedEvent {
 export interface MessageEvent {
   type: 'message';
   channel: string;
+  message?: {
+    user: string;
+    text: string;
+  };
   user: string;
   text: string;
   ts: string;

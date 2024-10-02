@@ -6,12 +6,12 @@ import * as emoji from 'node-emoji';
 
 export const validateMessageSlackEvent = (event: MessageEvent) => {
   if (
-    !event?.user ||
+    !(event?.user && event?.message?.user) ||
     !event?.channel ||
     event?.type !== 'message' ||
-    typeof event.user !== 'string' ||
-    typeof event.channel !== 'string' ||
-    typeof event.text !== 'string'
+    (typeof event.user !== 'string' &&
+      typeof event?.message?.user !== 'string') ||
+    typeof event.channel !== 'string'
   ) {
     console.log(event);
     throw createError({
