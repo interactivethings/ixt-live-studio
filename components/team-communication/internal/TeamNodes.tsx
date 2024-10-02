@@ -3,7 +3,6 @@ import { useChart } from '@/contexts/chart-context';
 import { useInitialRender } from '@/hooks/use-init-render';
 import { useMedia } from '@/hooks/use-media';
 import { useWindowDimensions } from '@/hooks/use-window-dimensions';
-import { TeamMember } from '@/types/firebase';
 import {
   adjustToMedia,
   determineTooltipPosition,
@@ -14,6 +13,7 @@ import { easeInOut, motion } from 'framer-motion';
 import { FC, useEffect, useState } from 'react';
 import { Node } from '../TeamCommunication';
 import Tooltip from './Tooltip';
+import { TeamMember } from '@/types/team-activity';
 
 interface ITeamNodeProps {
   nodes: Node[];
